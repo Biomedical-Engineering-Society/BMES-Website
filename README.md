@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BMES AI Assistant (RAG Chatbot)
 
-## Getting Started
+> A fast, context-aware RAG chatbot for the Biomedical Engineering Society (BMES).
 
-First, run the development server:
+## About
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This project is a **RAG (Retrieval Augmented Generation)** application designed to answer student questions about BMES.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Unlike generic AI models that hallucinate or give vague answers, this bot has "read" the official club documentation. It retrieves specific facts from a vector database and uses a Large Language Model (LLM) to generate accurate, human-like answers.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## The Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+I built this using a **Hybrid Architecture** to optimize for both cost (Free Tier) and speed:
 
-## Learn More
+- **Frontend:** [Next.js 15](https://nextjs.org/) (React, TypeScript, Tailwind CSS)
+- **Vector Database:** [Supabase](https://supabase.com/) (pgvector)
+- **Embeddings:** [Hugging Face](https://huggingface.co/) (`all-MiniLM-L6-v2`)
+- **Inference Engine:** [Groq](https://groq.com/) (LPU-accelerated Inference)
+- **LLM Model:** Meta's `Llama-3.1-8b-instant`
+- **Orchestration:** [LangChain](https://js.langchain.com/)
 
-To learn more about Next.js, take a look at the following resources:
+## How It Works (The Architecture)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Ingestion (The "Learning" Phase):**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    - A custom script (`scripts/ingest.ts`) scans PDF documents from the `/public` folder.
+    - It splits text into chunks and converts them into 384-dimensional vectors using Hugging Face embeddings.
+    - These vectors are stored in Supabase.
 
-## Deploy on Vercel
+2.  **Retrieval (The "Search" Phase):**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    - When a user asks a question, the system converts their query into a vector.
+    - It performs a semantic similarity search in Supabase to find the 3 most relevant paragraphs (chunks).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3.  **Generation (The "Answer" Phase):**
+    - The system sends the user's question + the retrieved paragraphs to **Groq**.
+    - Using **Llama 3.1**, it generates a concise answer based _only_ on the provided facts.
+    - It enforces strict formatting rules (Markdown, clickable social links) using "System Prompt Engineering."
+
+## 🏁 Getting Started
+
+### Prerequisites
+
+- Node.js & npm
+- A Supabase project (with pgvector enabled)
+- API Keys for Groq & Hugging Face
+
+### Installation
+
+1.  **Clone the repo:**
+
+    ```
+    cd bmes-chatbot
+    ```
+
+2.  **Install dependencies:**
+
+    ```
+    npm install
+    ```
+
+3.  **Set up Environment Variables:**
+    Create a `.env` file and add your keys:
+
+    ```env
+    SUPABASE_URL=your_supabase_url
+    SUPABASE_API=your_supabase_anon_key
+    HUGGINGFACE_TOKEN=your_hf_token
+    GROQ_API_KEY=your_groq_key
+    ```
+
+4.  **Run the Ingestion Script (Load Knowledge):**
+
+    ```
+    npx tsx scripts/ingest.ts
+    ```
+
+5.  **Run the App:**
+    ```
+    npm run dev
+    ```
+
+## What I Learned
+
+- How to implement **Vector Search** manually without relying on "black box" tools.
+- The importance of **Model Selection**: Why specialized Embedding models (MiniLM) differ from Chat models (Llama).
+- **Prompt Engineering:** How to use "System Instructions" to force specific behaviors (like formatting links or overriding data).
+- **API Resilience:** Debugging HTTP 500 errors and switching providers (Hugging Face -> Groq) to ensure uptime.

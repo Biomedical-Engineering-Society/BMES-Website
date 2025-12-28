@@ -2,16 +2,27 @@
   "name": "bmes-website",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "ingest": "ts-node --esm scripts/ingest.ts"
   },
   "dependencies": {
+    "@huggingface/inference": "^4.13.5",
+    "@langchain/community": "^1.1.1",
+    "@langchain/core": "^1.1.8",
+    "@supabase/supabase-js": "^2.89.0",
+    "dotenv": "^16.4.5",
+    "groq-sdk": "^0.37.0",
+    "langchain": "^1.2.3",
     "next": "16.1.1",
+    "pdf-parse": "^1.1.1",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -21,6 +32,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }

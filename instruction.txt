@@ -1,0 +1,128 @@
+==============================================================================
+BMES WEBSITE - TEAM INSTRUCTIONS
+==============================================================================
+
+Hey,
+
+This document contains everything you need to know to work on the new BMES website.
+I chose REACT cause it easily works with nextjs which makes it easy to deploy and put it out on the internert with vercel.
+
+We are building this using the "Industry Standard" tech stack (Next.js, React, Tailwind).
+This is what companies like Uber, Netflix, and TikTok use. Learning this now will look AMAZING on your resume.
+
+
+==============================================================================
+THE TECH STACK (Why we are using it)  BASICALLY JUST JAVA
+==============================================================================
+
+1. NEXT.JS (React Framework)
+   - Why: It's React but faster and easier for SEO.
+   - Benefit: It handles routing for us (folders = pages).
+   - Docs: https://nextjs.org/docs
+
+2. TAILWIND CSS (Styling)
+   - Why: No more massive .css files. We style things directly in the HTML.
+   - Benefit: Instead of writing "width: 100%; color: red;", you just write "w-full text-red-500".
+   - Cheat Sheet (Use this constantly!): https://tailwindcss.com/docs/utility-first
+
+3. TYPESCRIPT
+   - Why: It catches bugs before you run the code.
+   - Benefit: If you try to pass a Number where a String should be, it yells at you.
+
+==============================================================================
+GIT (IMPORTANT)
+==============================================================================
+
+#1: NEVER PUSH DIRECTLY TO "MAIN"
+The "main" branch is the actual final website. If you break main, the website goes down.
+
+#2: WORK ON YOUR OWN BRANCH
+Always create a new branch for your feature.
+
+If you dont know git watch a youtube video on it.
+
+
+
+
+---------------------------------------HOW TO START WORKING with GIT--------------------
+
+1. CLONE THE REPO (Do this once)
+   git clone https://github.com/BMES-TMU/bmes-website.git
+   cd bmes-website
+   npm install
+
+2. CREATE YOUR BRANCH (Do this every time you start a new task)
+   git checkout -b feature/your-page-name
+   (Example: git checkout -b feature/about-page)
+
+3. SAVE YOUR WORK
+   git add .
+   git commit -m "Added the mission statement section"
+
+4. UPLOAD YOUR WORK
+   git push origin feature/your-page-name
+
+5. FINISH
+   Go to GitHub.com and you will see a green button: "Compare & Pull Request".
+   Click it. I (Samin) will review your code and merge it into main.
+
+
+---------------------------------------To get it on your local----------------------
+
+
+1: Install Node.js (If you don't do this, nothing will work.)
+
+2: Get the Code Open your terminal (Command Prompt or VS Code Terminal) and run:
+
+git clone https://github.com/BMES-TMU/bmes-website.git
+cd bmes-website
+
+3: Install Dependencies This downloads all the libraries (React, Tailwind, Next.js) into your folder.
+npm install
+
+4:Run this command to start the local server:
+npm run dev
+Now open your browser and go to: http://localhost:3000
+
+
+==============================================================================
+WORKSPACES
+==============================================================================
+
+I have already created "Skeletons" for you. Go to `src/app/` and find your folder.
+Only edit files inside your specific folder to avoid conflicts!
+
+1. HASSAN (Home Page)
+   - Folder: `src/app/page.tsx`
+   - Task: Hero section, Highlights, "Welcome" text.
+   - Tip: Use `flex` and `grid` to align items.
+
+2. NITHIESHAN (About Us)
+   - Folder: `src/app/about/page.tsx`
+   - Task: Mission statement, History (check PDF docs), "Why Join" cards.
+
+3. SAMIN (Events + Chatbot)
+   - Folder: `src/app/events/page.tsx`
+   - Status: Chatbot is built (`src/components/ChatWidget.tsx`). Do not touch the `api/` folder unless you ask me!
+
+4. HARIS (Contact Us)
+   - Folder: `src/app/contact/page.tsx`
+   - Task: Contact form (visual only), Map embed, Social links.
+
+5. AYDIN (Team Page)
+   - Folder: `src/app/team/page.tsx`
+   - Task: Executive team grid, profile cards, photo gallery.
+
+==============================================================================
+HELP
+==============================================================================
+
+-msg me if you need clrification
+
+If you get stuck:
+1. Google 
+2. Even Ask ChatGPT to teach you
+3. Message in the group chat
+
+Thank you
+-Samin

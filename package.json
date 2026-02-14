@@ -11,6 +11,7 @@
     "ingest": "ts-node --esm scripts/ingest.ts"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@huggingface/inference": "^4.13.5",
     "@langchain/community": "^1.1.1",
     "@langchain/core": "^1.1.8",
@@ -22,7 +23,9 @@
     "pdf-parse": "^1.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-markdown": "^10.1.0"
+    "react-hook-form": "^7.71.1",
+    "react-markdown": "^10.1.0",
+    "resend": "^6.9.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

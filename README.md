@@ -1,6 +1,6 @@
 # BMES TMU - Official Website & AI Assistant
 
-> The official repository for the Biomedical Engineering Society (BMES) at TMU.
+> The official repository for the Biomedical Engineering Society (Toronto Metropolitan University Chapter).
 > Featuring a Next.js frontend and a custom RAG (Retrieval Augmented Generation) Chatbot.
 
 ## About The Project

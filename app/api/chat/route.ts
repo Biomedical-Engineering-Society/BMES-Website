@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
-import Groq from "groq-sdk"; // 🟢 INDUSTRY STANDARD: Specialized Inference Engine
+import Groq from "groq-sdk"; //INDUSTRY STANDARD: Specialized Inference Engine
 
 export async function POST(req: NextRequest) {
   try {
@@ -75,12 +75,12 @@ NEVER use HTML tags (like <b> or <br>). Never paste a raw https:// URL. Use STRI
 
 ;
 
-    console.log("⚡ Sending to Groq...");
+    console.log("Sending to Groq...");
 
     let answer = "I couldn't generate a summary right now, but please check the relevant documents below!";
     
     try {
-      // 🟢 ROBUSTNESS: We use Groq because it runs on LPUs (Lightning Processing Units).
+      // We use Groq because it runs on LPUs (Lightning Processing Units).
       // It is 10x faster than standard APIs and doesn't have the "Cold Boot" issues of Hugging Face.
       const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
       
@@ -96,11 +96,11 @@ NEVER use HTML tags (like <b> or <br>). Never paste a raw https:// URL. Use STRI
       
       // Extract the answer safely
       answer = response.choices[0]?.message?.content || answer;
-      console.log("✅ Groq Answer generated!");
+      console.log("Groq Answer generated!");
 
     } catch (llmError) {
-      // 🛡️ FAULT TOLERANCE: If the AI fails, we log it but STILL return the documents.
-      console.error("⚠️ Groq Generation Failed:", llmError);
+      // FAULT TOLERANCE: If the AI fails, we log it but STILL return the documents.
+      console.error("Groq Generation Failed:", llmError);
     }
 
     // ---------------------------------------------------------
@@ -115,7 +115,7 @@ NEVER use HTML tags (like <b> or <br>). Never paste a raw https:// URL. Use STRI
 
   } catch (error: any) {
     // Critical infrastructure failure (Database down, etc.)
-    console.error("❌ Critical Error:", error);
+    console.error("Critical Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

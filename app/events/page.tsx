@@ -1,53 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import ChatWidget from "../components/ChatWidget";
+import eventsDataRaw from "../../data/events.json";
 
-// 1. The Manual Event Database
-const eventsData = [
-  {
-    id: 1,
-    title: "BMES Synapse Conference 2026",
-    date: "2026-02-14",
-    time: "10:30 AM - 6:00 PM EST",
-    location: "Daphne Cockwell Complex (DCC), 288 Church Street",
-    description:
-      "Toronto's biggest Biomedical Engineering Conference! Join us as we fire the next signal in healthcare innovation. Includes complimentary meals, LinkedIn headshots, and a Case Competition.",
-    category: "Science & Tech",
-    link: "https://www.eventbrite.ca/e/bmes-synapse-conference-2026-tickets-1981463940987",
-  },
-  {
-    id: 2,
-    title: "BME Unfiltered: Career Panel",
-    date: "2026-02-04",
-    time: "6:00 PM - 8:00 PM EST",
-    location:
-      "George Vari Engineering and Computing Centre, ENG (Sears Atrium)",
-    description:
-      "Get ready to hear real talk from professionals in BME Unfiltered. Current trends, raw advice, and networking. Collab event with MUES. Food provided!",
-    category: "Career",
-    link: "#",
-  },
-  {
-    id: 3,
-    title: "Industry Night & Networking",
-    date: "2026-03-15",
-    time: "5:30 PM - 8:30 PM EST",
-    location: "Student Learning Centre (SLC)",
-    description:
-      "Meet industry professionals from leading biotech firms in Toronto. Bring your resume and your best elevator pitch!",
-    category: "Networking",
-    link: "#",
-  },
-];
+// The Event Database is now managed in data/events.json
+const eventsData = eventsDataRaw as any[];
 
 export default function EventsPage() {
   const [view, setView] = useState<"list" | "calendar">("list");
 
+  const router = useRouter();
+  
   // --- NEW: Interactive Calendar States ---
   // Tracks which month the calendar is currently showing
   const [currentCalendarDate, setCurrentCalendarDate] = useState(new Date());
-  // Tracks which event the user clicked on
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
   // List View Logic
@@ -94,46 +62,75 @@ export default function EventsPage() {
 
     return (
       <div
-        className={`bg-white rounded-xl shadow-sm border p-6 transition-all hover:shadow-md ${isPast ? "opacity-75 grayscale-[20%]" : "border-blue-100"}`}
+        onClick={() => {
+          if (isPast) router.push(`/events/${event.id}`);
+        }}
+        className={`bg-white rounded-xl shadow-sm border overflow-hidden transition-all hover:shadow-md flex flex-col ${isPast ? "opacity-75 grayscale-[20%] cursor-pointer hover:grayscale-0 hover:opacity-100" : "border-blue-100"}`}
       >
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-              {event.category}
-            </span>
-            <h3 className="text-xl font-bold text-gray-900 mt-3">
-              {event.title}
-            </h3>
+        {/* Optional Event Thumbnail - Only show if the event is in the past */}
+        {isPast && event.images && event.images.length > 0 && (
+          <div className="w-full h-48 bg-gray-100 relative border-b">
+            <img 
+              src={event.images[0]} 
+              alt={event.title} 
+              className="w-full h-full object-cover" 
+            />
           </div>
-          <div className="text-right">
-            <div className="text-lg font-bold text-gray-800">
-              {/* Use displayDate here */}
-              {displayDate.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-              })}
+        )}
+        
+        <div className="p-6 flex-1 flex flex-col">
+          <div className="flex justify-between items-start mb-4 gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                {event.category}
+              </span>
+              <h3 className="text-xl font-bold text-gray-900 mt-3">
+                {event.title}
+              </h3>
             </div>
-            <div className="text-sm text-gray-500">
-              {/* Use displayDate here */}
-              {displayDate.getFullYear()}
+            <div className="text-right shrink-0">
+              <div className="text-lg font-bold text-gray-800 leading-tight">
+                {displayDate.toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                })}
+              </div>
+              <div className="text-sm text-gray-500">
+                {displayDate.getFullYear()}
+              </div>
             </div>
+          </div>
+          <div className="space-y-2 text-sm text-gray-600 mb-4">
+            <p className="flex items-center gap-2"> {event.time}</p>
+            <p className="flex items-center gap-2">📍 {event.location}</p>
+          </div>
+          <p className="text-gray-600 text-sm mb-6 line-clamp-3">
+            {event.description}
+          </p>
+          <div className="mt-auto flex flex-wrap gap-2">
+            {isPast ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/events/${event.id}`);
+                }}
+                className="inline-block px-5 py-2 rounded-lg text-sm font-medium transition shadow-sm bg-gray-100 text-gray-800 hover:bg-gray-200"
+              >
+                View Archive
+              </button>
+            ) : (
+              <a
+                href={event.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-block px-5 py-2 rounded-lg text-sm font-medium transition shadow-sm bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Get Tickets
+              </a>
+            )}
           </div>
         </div>
-        <div className="space-y-2 text-sm text-gray-600 mb-4">
-          <p className="flex items-center gap-2"> {event.time}</p>
-          <p className="flex items-center gap-2">📍 {event.location}</p>
-        </div>
-        <p className="text-gray-600 text-sm mb-6 line-clamp-3">
-          {event.description}
-        </p>
-        <a
-          href={event.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`inline-block px-5 py-2 rounded-lg text-sm font-medium transition ${isPast ? "bg-gray-100 text-gray-600 hover:bg-gray-200" : "bg-blue-600 text-white hover:bg-blue-700"}`}
-        >
-          {isPast ? "View Details" : "Get Tickets"}
-        </a>
       </div>
     );
   };
@@ -273,7 +270,9 @@ export default function EventsPage() {
                       {dayEvents.map((e) => (
                         <div
                           key={e.id}
-                          onClick={() => setSelectedEvent(e)}
+                          onClick={() => {
+                            setSelectedEvent(e);
+                          }}
                           className="text-[10px] md:text-xs bg-blue-600 text-white rounded px-1.5 py-1 truncate cursor-pointer hover:bg-blue-700 hover:shadow-md transition active:scale-95"
                           title={e.title}
                         >
@@ -343,14 +342,23 @@ export default function EventsPage() {
               >
                 Close
               </button>
-              <a
-                href={selectedEvent.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-5 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition shadow-sm"
-              >
-                View Full Details
-              </a>
+              {new Date(selectedEvent.date) < new Date() ? (
+                <button
+                  onClick={() => router.push(`/events/${selectedEvent.id}`)}
+                  className="px-5 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition shadow-sm"
+                >
+                  View Archive
+                </button>
+              ) : (
+                <a
+                  href={selectedEvent.link && selectedEvent.link !== "#" ? selectedEvent.link : "/contact"}
+                  target={selectedEvent.link && selectedEvent.link !== "#" ? "_blank" : "_self"}
+                  rel="noopener noreferrer"
+                  className="px-5 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition shadow-sm"
+                >
+                  {selectedEvent.link && selectedEvent.link !== "#" ? "Get Tickets" : "Learn More"}
+                </a>
+              )}
             </div>
           </div>
         </div>

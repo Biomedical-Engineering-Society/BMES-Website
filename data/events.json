@@ -1,0 +1,43 @@
+[
+  {
+    "id": 1,
+    "title": "BMES Synapse Conference 2026",
+    "date": "2026-02-14",
+    "time": "10:30 AM - 6:00 PM EST",
+    "location": "Daphne Cockwell Complex (DCC), 288 Church Street",
+    "description": "Toronto's biggest Biomedical Engineering Conference! Join us as we fire the next signal in healthcare innovation. Includes complimentary meals, LinkedIn headshots, and a Case Competition.",
+    "category": "Science & Tech",
+    "link": "https://www.eventbrite.ca/e/bmes-synapse-conference-2026-tickets-1981463940987",
+    "images": [
+      "/media/BMESConf.png"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "BME Unfiltered: Career Panel",
+    "date": "2026-02-04",
+    "time": "6:00 PM - 8:00 PM EST",
+    "location": "George Vari Engineering and Computing Centre, ENG (Sears Atrium)",
+    "description": "Get ready to hear real talk from professionals in BME Unfiltered. Current trends, raw advice, and networking. Collab event with MUES. Food provided!",
+    "category": "Career",
+    "link": "#",
+    "images": [
+      "/media/Group_photo.jpg",
+      "/media/DSC_0154.JPG"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Industry Night & Networking",
+    "date": "2026-03-15",
+    "time": "5:30 PM - 8:30 PM EST",
+    "location": "Student Learning Centre (SLC)",
+    "description": "Meet industry professionals from leading biotech firms in Toronto. Bring your resume and your best elevator pitch!",
+    "category": "Networking",
+    "link": "#",
+    "images": [
+      "/media/About.png",
+      "/media/cubec.jpg"
+    ]
+  }
+]

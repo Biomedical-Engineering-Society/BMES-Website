@@ -1,0 +1,2 @@
+app/components/ContactForm.tsx(3,25): error TS2307: Cannot find module 'react-hook-form' or its corresponding type declarations.
+app/contact/page.tsx(2,30): error TS2307: Cannot find module '@heroicons/react/24/solid' or its corresponding type declarations.

@@ -24,10 +24,10 @@ export default function TeamPage() {
       
       <div className="p-10 shadow-[inset_0_0_15px_rgba(0,0,0,0.15)] bg-white">
         
-        {/* Leaders */}
+        {/* Execs */}
         <div className="max-w-6xl mx-auto shadow-[0_0_5px_rgba(0,0,0,0.2)]">
           <div className="max-w-6xl h-[75px] mx-auto bg-white p-3 rounded-[4px_4px_0_0]">
-            <h2 className="text-3xl font-bold text-black text-center mx-auto w-[75%] border-b-2 p-2">Leaders</h2>
+            <h2 className="text-3xl font-bold text-black text-center mx-auto w-[75%] border-b-2 p-2">Executives</h2>
           </div>
           <div className="max-w-6xl h-auto mx-auto bg-white mb-12 p-4 pb-9 rounded-[0_0_4px_4px] grid grid-cols-1 gap-3 gap-y-9 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 team-grid">
             <TeamCard name="Mark Yacoub" image="default.jpg" role="President" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>

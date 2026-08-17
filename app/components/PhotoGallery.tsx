@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon } from "./BrandIcons";
 
 export type GalleryPhoto = {
@@ -9,22 +9,45 @@ export type GalleryPhoto = {
   alt: string;
 };
 
+const AUTOPLAY_MS = 5000;
+
 /**
- * Manual-only photo stage. Every photo is mounted and crossfaded on opacity, so
- * moving between them never shows a blank frame while a new file loads.
+ * Photo stage. Every photo is mounted and crossfaded on opacity, so moving
+ * between them never shows a blank frame while a new file loads.
  *
- * No autoplay: the team asked for the visitor to stay in control.
+ * It advances on its own until the visitor takes control, then stops for good:
+ * an autoplaying carousel that keeps stealing the photo back from someone who
+ * just chose one is worse than no autoplay at all.
  */
 export default function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
   const [index, setIndex] = useState(0);
+  const [taken, setTaken] = useState(false);
 
-  if (photos.length === 0) return null;
+  const count = photos.length;
 
-  const step = (delta: number) =>
-    setIndex((current) => (current + delta + photos.length) % photos.length);
+  const step = useCallback(
+    (delta: number) => setIndex((current) => (current + delta + count) % count),
+    [count],
+  );
+
+  /** Any deliberate interaction ends autoplay permanently. */
+  const take = useCallback((action: () => void) => {
+    setTaken(true);
+    action();
+  }, []);
+
+  useEffect(() => {
+    if (taken || count < 2) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const timer = setInterval(() => setIndex((current) => (current + 1) % count), AUTOPLAY_MS);
+    return () => clearInterval(timer);
+  }, [taken, count]);
+
+  if (count === 0) return null;
 
   return (
-    <div className="relative h-[300px] overflow-hidden rounded-[18px] bg-placeholder sm:h-[420px] lg:h-[540px]">
+    <div className="group/gallery relative h-[300px] overflow-hidden rounded-[18px] bg-placeholder sm:h-[420px] lg:h-[540px]">
       {photos.map((photo, i) => (
         <Image
           key={photo.src}
@@ -33,52 +56,65 @@ export default function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
           fill
           sizes="(max-width: 1024px) 100vw, 1264px"
           priority={i === 0}
-          className="object-cover transition-opacity duration-[400ms] ease-out"
+          className="object-cover transition-opacity duration-[600ms] ease-out"
           style={{ opacity: i === index ? 1 : 0 }}
         />
       ))}
 
-      <div className="absolute inset-x-5 bottom-5 flex items-center justify-between gap-5 md:inset-x-[30px] md:bottom-[26px]">
-        {/* The pill keeps the white indicators readable over a bright photo. */}
-        {/* A group of toggle buttons, not a tablist: there is no tabpanel here
-            and none of the tablist keyboard model is implemented. */}
-        <div
-          className="flex gap-2 rounded-full bg-[rgba(7,27,51,0.45)] px-3 py-2.5 backdrop-blur-sm"
-          role="group"
-          aria-label="Choose a photo"
-        >
-          {photos.map((photo, i) => (
-            <button
-              key={photo.src}
-              type="button"
-              aria-pressed={i === index}
-              aria-label={`Photo ${i + 1} of ${photos.length}`}
-              onClick={() => setIndex(i)}
-              className={`h-[5px] w-[26px] rounded-full transition-colors md:w-[34px] ${
-                i === index ? "bg-white" : "bg-white/45 hover:bg-white/70"
-              }`}
-            />
-          ))}
-        </div>
+      {/* Just enough shading at the foot of the frame to hold the indicators. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(180deg,rgba(7,27,51,0)_0%,rgba(7,27,51,0.55)_100%)]"
+        aria-hidden="true"
+      />
 
-        <div className="flex items-center gap-2">
+      <button
+        type="button"
+        onClick={() => take(() => step(-1))}
+        aria-label="Previous photo"
+        className="absolute left-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-[rgba(7,27,51,0.42)] text-white backdrop-blur-sm transition-all duration-200 hover:border-white hover:bg-white hover:text-ink md:left-6 md:h-12 md:w-12 md:opacity-75 md:group-hover/gallery:opacity-100 md:focus-visible:opacity-100"
+      >
+        <ArrowLeftIcon size={20} />
+      </button>
+
+      <button
+        type="button"
+        onClick={() => take(() => step(1))}
+        aria-label="Next photo"
+        className="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-[rgba(7,27,51,0.42)] text-white backdrop-blur-sm transition-all duration-200 hover:border-white hover:bg-white hover:text-ink md:right-6 md:h-12 md:w-12 md:opacity-75 md:group-hover/gallery:opacity-100 md:focus-visible:opacity-100"
+      >
+        <ArrowRightIcon size={20} />
+      </button>
+
+      {/* Progress bars, not dots: while autoplay is running the active one fills
+          so the timing is visible rather than surprising. */}
+      <div
+        className="absolute inset-x-0 bottom-5 flex justify-center gap-2 px-5 md:bottom-6"
+        role="group"
+        aria-label="Choose a photo"
+      >
+        {photos.map((photo, i) => (
           <button
+            key={photo.src}
             type="button"
-            onClick={() => step(-1)}
-            aria-label="Previous photo"
-            className="flex h-[42px] w-[42px] items-center justify-center rounded-full border border-white/50 bg-[rgba(7,27,51,0.45)] text-white backdrop-blur-sm transition-colors hover:border-white hover:bg-white hover:text-ink"
+            aria-pressed={i === index}
+            aria-label={`Photo ${i + 1} of ${count}`}
+            onClick={() => take(() => setIndex(i))}
+            className="group/dot h-6 w-10 md:w-14"
           >
-            <ArrowLeftIcon />
+            <span className="mt-2.5 block h-[3px] overflow-hidden rounded-full bg-white/35 transition-colors group-hover/dot:bg-white/60">
+              <span
+                className="block h-full rounded-full bg-white"
+                style={
+                  i === index
+                    ? taken
+                      ? { width: "100%" }
+                      : { animation: `galleryFill ${AUTOPLAY_MS}ms linear forwards` }
+                    : { width: 0 }
+                }
+              />
+            </span>
           </button>
-          <button
-            type="button"
-            onClick={() => step(1)}
-            aria-label="Next photo"
-            className="flex h-[42px] w-[42px] items-center justify-center rounded-full border border-white/50 bg-[rgba(7,27,51,0.45)] text-white backdrop-blur-sm transition-colors hover:border-white hover:bg-white hover:text-ink"
-          >
-            <ArrowRightIcon />
-          </button>
-        </div>
+        ))}
       </div>
     </div>
   );

@@ -1,43 +1,583 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --bmes-purple: rgb(42, 41, 107);
-  --bmes-purple-hover: rgb(33, 33, 86);
-  --bmes-red: rgb(148, 63, 70);
+/* ==========================================================================
+   BMES TMU design tokens
+   Source of truth: the approved logo (brand blue) and its ECG line (crimson).
+   Every colour used anywhere on the site should come from this list.
+   ========================================================================== */
+
+@theme {
+  /* Brand */
+  --color-brand: #156cce;
+  --color-brand-hover: #0d4f99;
+  --color-brand-tint: #eff4fc;
+  --color-brand-tint-2: #eaf2fd;
+  --color-brand-border: #b9d4f5;
+  --color-crimson: #a90123;
+  /* A lighter, friendlier red for the chat launcher. Deep enough to keep the
+     white glyph at 5.9:1, light enough not to read as an alert. */
+  --color-pulse: #c8102e;
+
+  /* Dark grounds */
+  --color-navy: #071b33;
+  --color-navy-deep: #050f1e;
+
+  /* Text
+     #5b6b85 is the contrast floor on white (5.40:1). Nothing lighter than this
+     may carry text on a light surface. */
+  --color-ink: #14213d;
+  --color-body: #4a5a75;
+  --color-muted: #5b6b85;
+  --color-navlink: #33425c;
+
+  /* Surfaces and lines */
+  --color-surface: #f5f8fd;
+  --color-surface-2: #f7f9fd;
+  --color-track: #f1f5fb;
+  /* Sits behind an image while it loads, never behind text */
+  --color-placeholder: #eef2f8;
+  --color-hairline: #e4eaf4;
+  --color-hairline-strong: #d5dfee;
+
+  /* On navy */
+  --color-on-navy: #cdd9ea;
+  --color-on-navy-2: #bccddf;
+  --color-on-navy-soft: #8fa9c9;
+  --color-on-navy-muted: #7fb2f2;
+  --color-footer-text: #7d90a8;
+  --color-footer-icon: #6d8098;
+
+  /* On brand blue (4.57:1 against #156cce) */
+  --color-on-brand: #e9f2fe;
+
+  /* Accent, navy grounds only */
+  --color-salmon: #ff8a94;
+  --color-salmon-deep: #ff5f6d;
+
+  /* Radii */
+  --radius-btn: 10px;
+  --radius-card: 14px;
+  --radius-panel: 18px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+  --font-display: var(--font-outfit), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: var(--color-ink);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* grid adjustment for smaller windows on team */
-@media (min-width: 500px) and (max-width: 639px) {
-  .team-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+::selection {
+  background: var(--color-brand);
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
-/* pulse for team page bmes icon */
-@keyframes scalePulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+/* A single, consistent focus ring everywhere. */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ==========================================================================
+   Layout shells
+   Design width is 1440px with an 88px page gutter and a 48px nav gutter.
+   ========================================================================== */
+
+/* Content width, in one place so full-bleed bands can match the shell exactly. */
+:root {
+  --shell-max: 1440px;
+}
+
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: var(--shell-max);
+    margin-inline: auto;
+    padding-inline: clamp(20px, 6.1vw, 88px);
+  }
+
+  .shell-nav {
+    width: 100%;
+    max-width: var(--shell-max);
+    margin-inline: auto;
+    padding-inline: clamp(18px, 3.4vw, 48px);
+  }
+
+  /* Vertical rhythm for full-width bands */
+  .band {
+    padding-block: clamp(56px, 7.4vw, 96px);
+  }
+
+  .band-sm {
+    padding-block: clamp(48px, 5.6vw, 72px);
+  }
+
+  /* ------------------------------------------------------------------
+     Type scale
+     ------------------------------------------------------------------ */
+
+  /* Sized so "Where academia meets industry." sits on one line from roughly
+     720px up, and balances onto two below that. */
+  .t-hero {
+    font-family: var(--font-outfit), system-ui, sans-serif;
+    font-size: clamp(2.5rem, 5.5vw, 4.75rem);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .t-page {
+    font-family: var(--font-outfit), system-ui, sans-serif;
+    font-size: clamp(2.3rem, 4.9vw, 3.875rem);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    text-wrap: pretty;
+  }
+
+  .t-page-sm {
+    font-family: var(--font-outfit), system-ui, sans-serif;
+    font-size: clamp(2.1rem, 4.3vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+    text-wrap: pretty;
+  }
+
+  .t-section {
+    font-family: var(--font-outfit), system-ui, sans-serif;
+    font-size: clamp(1.85rem, 3.4vw, 2.875rem);
+    font-weight: 700;
+    line-height: 1.07;
+    letter-spacing: -0.03em;
+    text-wrap: pretty;
+  }
+
+  .t-section-sm {
+    font-family: var(--font-outfit), system-ui, sans-serif;
+    font-size: clamp(1.7rem, 2.9vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    text-wrap: pretty;
+  }
+
+  .t-band {
+    font-family: var(--font-outfit), system-ui, sans-serif;
+    font-size: clamp(1.55rem, 2.5vw, 2.125rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    text-wrap: pretty;
+  }
+
+  .t-card {
+    font-family: var(--font-outfit), system-ui, sans-serif;
+    font-size: 1.3125rem;
+    font-weight: 600;
+    line-height: 1.22;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+  }
+
+  .t-num {
+    font-family: var(--font-outfit), system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .t-lead {
+    font-size: clamp(1.0625rem, 1.4vw, 1.3125rem);
+    line-height: 1.58;
+    text-wrap: pretty;
+  }
+
+  /* ------------------------------------------------------------------
+     Eyebrow label: 26x2 crimson rule + 12/700/0.2em uppercase
+     ------------------------------------------------------------------ */
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+  }
+
+  .eyebrow::before {
+    content: "";
+    flex: none;
+    width: 26px;
+    height: 2px;
+    background: var(--color-crimson);
+  }
+
+  .eyebrow-on-dark {
+    color: #9fc4f2;
+  }
+
+  .eyebrow-on-dark::before {
+    background: var(--color-salmon-deep);
+  }
+
+  .eyebrow-on-brand {
+    color: var(--color-on-brand);
+  }
+
+  .eyebrow-on-brand::before {
+    background: #ffffff;
+  }
+
+  /* ------------------------------------------------------------------
+     Buttons
+     ------------------------------------------------------------------ */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 28px;
+    border-radius: var(--radius-btn);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+      background-color 160ms ease,
+      color 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .btn-sm {
+    padding: 13px 22px;
+    font-size: 0.9375rem;
+  }
+
+  .btn-primary {
+    background: var(--color-brand);
+    color: #ffffff;
+  }
+
+  .btn-primary:hover {
+    background: var(--color-brand-hover);
+    color: #ffffff;
+  }
+
+  .btn-white {
+    background: #ffffff;
+    color: #0d3a70;
+  }
+
+  /* Salmon fill on hover as designed, but with a navy label: white on salmon is
+     2.25:1, so the button's own text would vanish exactly as it is aimed at. */
+  .btn-white:hover {
+    background: var(--color-salmon);
+    color: var(--color-navy);
+  }
+
+  .btn-ghost-light {
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    color: #ffffff;
+  }
+
+  .btn-ghost-light:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+
+  .btn-outline {
+    border: 1px solid var(--color-hairline-strong);
+    background: #ffffff;
+    color: var(--color-ink);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--color-brand);
+    color: var(--color-brand);
+  }
+
+  /* Text link with the 2px underline used across the site */
+  .link-underline {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    align-self: flex-start;
+    padding-bottom: 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-brand);
+    border-bottom: 2px solid var(--color-brand);
+    transition:
+      color 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .link-underline:hover {
+    color: var(--color-crimson);
+    border-color: var(--color-crimson);
+  }
+
+  /* ------------------------------------------------------------------
+     Quick links band. Full bleed, so every pixel of the row is part of a
+     card and responds to hover.
+
+     Padding lives here and not as a utility on the anchor: Tailwind's
+     utilities layer wins over components, so a px-* class would override it.
+     ------------------------------------------------------------------ */
+
+  .quick-links {
+    display: grid;
+    gap: 1px;
+    background: var(--color-hairline);
+    grid-template-columns: 1fr;
+  }
+
+  .quick-links > li > a {
+    padding-inline: 24px;
+  }
+
+
+  @media (min-width: 640px) {
+    .quick-links {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .quick-links > li > a {
+      padding-inline: 32px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .quick-links {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Cards
+     ------------------------------------------------------------------ */
+
+  .card {
+    background: #ffffff;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-card);
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .card-hover:hover {
+    border-color: var(--color-brand);
+    box-shadow: 0 22px 44px -30px rgba(21, 108, 206, 0.6);
+  }
+
+  /* ------------------------------------------------------------------
+     Assistant markdown
+     Tailwind's preflight strips list and paragraph defaults, and the
+     `prose` utilities need the typography plugin, which this project does
+     not install. These few rules give the chatbot's markdown its styling
+     without pulling in a dependency for one component.
+     ------------------------------------------------------------------ */
+
+  .chat-md > :first-child {
+    margin-top: 0;
+  }
+
+  .chat-md > :last-child {
+    margin-bottom: 0;
+  }
+
+  .chat-md p {
+    margin-block: 0.5em;
+    line-height: 1.6;
+  }
+
+  .chat-md ul,
+  .chat-md ol {
+    margin-block: 0.5em;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+  }
+
+  .chat-md ul {
+    list-style: disc;
+  }
+
+  .chat-md ol {
+    list-style: decimal;
+  }
+
+  .chat-md a {
+    font-weight: 700;
+    color: var(--color-brand);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .chat-md a:hover {
+    color: var(--color-brand-hover);
+  }
+
+  .chat-md strong {
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .chat-md code {
+    padding: 0.1em 0.35em;
+    border-radius: 5px;
+    background: var(--color-brand-tint);
+    font-size: 0.92em;
+  }
+
+  /* ------------------------------------------------------------------
+     Motion
+     ------------------------------------------------------------------ */
+
+  .rise {
+    animation: rise 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes markPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.07);
+  }
+}
+
+/* Calendar grid settling in after a month change */
+@keyframes monthIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Gallery indicator filling in time with autoplay */
+@keyframes galleryFill {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Quiet echo behind the chat launcher */
+@keyframes chatEcho {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  70%,
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+/* Sweeping bar in the route-transition curtain */
+@keyframes curtainSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+/* Reveal-on-scroll, driven by IntersectionObserver in Reveal.tsx */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hide scrollbars inside compact scrollers (calendar cells, chat) */
+.scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-hairline-strong) transparent;
+}
+
+.scrollbar-slim::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-slim::-webkit-scrollbar-thumb {
+  background: var(--color-hairline-strong);
+  border-radius: 999px;
 }

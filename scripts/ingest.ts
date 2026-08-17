@@ -7,13 +7,18 @@ import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
+// Aliased because the DOM lib also defines a global `Document`.
+import type { Document as LangChainDocument } from "@langchain/core/documents";
 
 dotenv.config();
 
 // ---------------------------------------------------------------------------
 // CONFIGURATION: Add new file types here when you are ready
 // ---------------------------------------------------------------------------
-const LOADERS: Record<string, (path: string) => any> = {
+/** Anything with a `.load()` returning LangChain documents fits here. */
+type DocumentLoader = { load: () => Promise<LangChainDocument[]> };
+
+const LOADERS: Record<string, (path: string) => DocumentLoader> = {
   ".pdf": (path: string) => new PDFLoader(path),
   // ".txt": (path: string) => new TextLoader(path), // Uncomment this line later!
   // ".md": (path: string) => new TextLoader(path),
@@ -26,21 +31,24 @@ async function ingestDocuments() {
       process.env.SUPABASE_API!
     );
 
-    const MEDIA_DIR = "public/media";
-    
+    // Source documents live outside public/ on purpose: anything under public/
+    // is served at the site root, and these contain contact details that should
+    // not be downloadable by anyone who guesses the filename.
+    const SOURCE_DIR = "data/source-docs";
+
     // 1. Check directory
-    if (!fs.existsSync(MEDIA_DIR)) {
-      throw new Error(`Directory not found: ${MEDIA_DIR}`);
+    if (!fs.existsSync(SOURCE_DIR)) {
+      throw new Error(`Directory not found: ${SOURCE_DIR}`);
     }
 
-    const files = fs.readdirSync(MEDIA_DIR);
-    console.log(`[INFO] Found ${files.length} files in ${MEDIA_DIR}. Checking status...`);
+    const files = fs.readdirSync(SOURCE_DIR);
+    console.log(`[INFO] Found ${files.length} files in ${SOURCE_DIR}. Checking status...`);
 
     const newDocs = [];
 
     // 2. The "Smart" Loop
     for (const file of files) {
-      const filePath = path.join(MEDIA_DIR, file);
+      const filePath = path.join(SOURCE_DIR, file);
       const ext = path.extname(file).toLowerCase();
 
       // DYNAMIC CHECK: Is this file type in our LOADERS list?

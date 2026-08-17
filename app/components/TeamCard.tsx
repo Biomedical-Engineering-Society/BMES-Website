@@ -1,73 +1,66 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import { useState } from "react";
+import type { Member } from "@/lib/team";
 
-type TeamCardProps = {
-  image: string;
-  name: string;
-  role: string;
-  bio?: string;
-};
+/**
+ * One person.
+ *
+ * Cards with a written bio become a button that expands it in place; cards
+ * without one stay as plain, non-interactive content rather than offering an
+ * affordance that does nothing.
+ */
+export default function TeamCard({ member }: { member: Member }) {
+  const [open, setOpen] = useState(false);
+  const hasBio = Boolean(member.bio?.trim());
 
-export default function TeamCard({ image, name, role, bio }: TeamCardProps) {
-  const [active, setActive] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  // Close bio if click is outside the card
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
-        setActive(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const identity = (
+    <>
+      <span className="font-display block text-[15px] font-semibold leading-tight tracking-[-0.015em] text-ink sm:text-base">
+        {member.name}
+      </span>
+      <span className="mt-1 block text-[13px] font-semibold leading-snug text-brand">
+        {member.role}
+      </span>
+    </>
+  );
 
   return (
-    <div
-  ref={cardRef}
-  className="relative flex items-center justify-center h-[275px] bg-white shadow-[0_0_5px_rgba(0,0,0,0.2)]"
->
-  {/* Member Image */}
-  <img
-    src={`/members/${image}`}
-    alt={name}
-    className="h-[calc(100%-10px)] w-[calc(100%-10px)] object-cover rounded-[2px]"
-  />
+    <li className="card card-hover overflow-hidden" data-reveal="">
+      <div className="relative aspect-[4/5] bg-placeholder">
+        <Image
+          src={`/members/${member.image}`}
+          alt={member.name}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="object-cover"
+        />
+      </div>
 
-  {/* Overlay Card */}
-  <div
-    className={`absolute -bottom-6 left-5 right-5 bg-[var(--bmes-purple)] text-white p-2 cursor-pointer transition-all duration-500 hover:scale-105 hover:bg-[var(--bmes-purple-hover)] overflow-hidden
-      ${active ? "h-full" : "h-24"} 
-      flex flex-col items-center justify-center text-center`}
-    onClick={() => setActive(!active)}
-  >
-    {/* Name */}
-    <h3 className="font-semibold text-xs sm:text-sm md:text-base lg:text-lg">
-      {name}
-    </h3>
+      <div className="p-4">
+        {hasBio ? (
+          <button
+            type="button"
+            onClick={() => setOpen((value) => !value)}
+            aria-expanded={open}
+            className="w-full text-left"
+          >
+            {identity}
+            <span className="mt-2 inline-block text-[12px] font-bold uppercase tracking-[0.12em] text-muted">
+              {open ? "Less" : "Read bio"}
+            </span>
+          </button>
+        ) : (
+          <div>{identity}</div>
+        )}
 
-    {/* Role */}
-    <p className="text-[10px] sm:text-xs md:text-sm lg:text-md">
-      {role}
-    </p>
-
-    {/* Bio */}
-    {bio && (
-      <p
-        className={`text-[10px] sm:text-[12px] md:text-[12px] lg:text-[13px] mt-2 transition-all duration-500 overflow-hidden ${
-          active ? "opacity-100 max-h-40" : "opacity-0 max-h-0"
-        }`}
-      >
-        {bio}
-      </p>
-    )}
-  </div>
-</div>
-
+        {hasBio && open && (
+          <p className="mt-3 border-t border-hairline pt-3 text-[13px] leading-relaxed text-muted">
+            {member.bio}
+          </p>
+        )}
+      </div>
+    </li>
   );
 }

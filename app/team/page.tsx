@@ -1,163 +1,102 @@
-import ChatWidget from "../components/ChatWidget";
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import TeamCard from "../components/TeamCard";
+import { TEAM, TEAM_SIZE } from "@/lib/team";
 
-export default function TeamPage() {  
+export const metadata: Metadata = {
+  title: "Team",
+  description:
+    "The executives, directors and first year representatives running the Biomedical Engineering Society at Toronto Metropolitan University.",
+};
+
+export default function TeamPage() {
   return (
-    <div className="min-h-screen">
-      {/* INSTRUCTIONS FOR AYDIN */}
-      {/* AYDIN: This is the Exec Team Gallery.
-        1. Create a grid layout (3 columns).
-        2. Add 'TeamCard' components for each exec (Image, Name, Role, LinkedIn link).
-        3. Add a section for 'Past Execs' or 'Gallery' of event photos at the bottom.
-      */}
-      <div className="w-full h-[calc(100vh-60px)] bg-white grid grid-cols-2 shadow-[inset_0_0_15px_rgba(0,0,0,0.15)]">
-        <div className="h-full flex flex-col items-center justify-center bg-[var(--bmes-red)] shadow-[inset_0_0_15px_rgba(0,0,0,0.15)]">
-          <h1 className="text-2xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white">Meet our Team</h1>
-          <p className="text-md sm:text-md md:text-lg lg:text-xl font-semibold text-gray-300 mt-2 mx-10 text-center">Connecting students across campus with a passion for biomedical engineering!</p>
-        </div>
-        <div className="h-full flex items-center justify-center shadow-[inset_0_0_15px_rgba(0,0,0,0.15)]"> 
-          <div className="animate-[scalePulse_2.5s_ease-in-out_infinite]">
-            <img src="/web-images/bmes-linkedin-icon.png" alt="BMES Linkedin Logo" />
-          </div>
-        </div>
-      </div>
-      
-      <div className="p-10 shadow-[inset_0_0_15px_rgba(0,0,0,0.15)] bg-white">
-        
-        {/* Execs */}
-        <div className="max-w-6xl mx-auto shadow-[0_0_5px_rgba(0,0,0,0.2)]">
-          <div className="max-w-6xl h-[75px] mx-auto bg-white p-3 rounded-[4px_4px_0_0]">
-            <h2 className="text-3xl font-bold text-black text-center mx-auto w-[75%] border-b-2 p-2">Executives</h2>
-          </div>
-          <div className="max-w-6xl h-auto mx-auto bg-white mb-12 p-4 pb-9 rounded-[0_0_4px_4px] grid grid-cols-1 gap-3 gap-y-9 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 team-grid">
-            <TeamCard name="Mark Yacoub" image="default.jpg" role="President" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Ryson Yau" image="default.jpg" role="Vice President" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Afrah Khan" image="default.jpg" role="Advisor" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Sachit Thakur" image="default.jpg" role="Advisor" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Alfonso Santiago" image="default.jpg" role="Vice President of Marketing" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Blair Gao" image="default.jpg" role="Vice President of Events" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="David Faltaous" image="default.jpg" role="Vice President of Events" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Ricky Nong" image="default.jpg" role="Vice President of Finance" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Uma Sivaperuman" image="default.jpg" role="Vice President of Communications" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Yang Lu" image="default.jpg" role="Vice President of Operations" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-          </div>
-        </div>
+    <>
+      {/* ================================================================
+          Header
+          ================================================================ */}
+      <section className="relative overflow-hidden bg-navy text-white">
+        <Image
+          src="/media/Group_photo.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-40"
+        />
+        <div
+          className="absolute inset-0 bg-[linear-gradient(100deg,rgba(7,27,51,0.94)_0%,rgba(7,27,51,0.8)_45%,rgba(9,38,74,0.58)_100%)]"
+          aria-hidden="true"
+        />
 
-        {/* Communications */}
-        <div className="max-w-6xl mx-auto shadow-[0_0_5px_rgba(0,0,0,0.2)]">
-          <div className="max-w-6xl h-[75px] mx-auto bg-white p-3 rounded-[4px_4px_0_0]">
-            <h2 className="text-3xl font-bold text-black text-center mx-auto w-[75%] border-b-2 p-2">Communications</h2>
+        <div className="shell relative z-10 flex flex-col gap-10 py-14 md:py-20">
+          <div className="flex max-w-[820px] flex-col gap-4">
+            <span className="eyebrow eyebrow-on-dark">Our team</span>
+            <h1 className="t-page-sm">Meet the people behind it.</h1>
+            <p className="t-lead max-w-[640px] text-on-navy">
+              Connecting students across campus with a passion for biomedical engineering. Every
+              workshop, panel and conference on this site is run by the people below.
+            </p>
           </div>
-          <div className="max-w-6xl h-auto mx-auto bg-white mb-12 p-4 pb-9 rounded-[0_0_4px_4px] grid grid-cols-1 gap-3 gap-y-9 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 team-grid">
-            <TeamCard name="Kavin Manivannan" image="default.jpg" role="Communications Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Lior Monroy" image="default.jpg" role="Communications Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Mirna Zogheib" image="default.jpg" role="Communications Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Ronit Royan" image="default.jpg" role="Communications Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Shadid Tabeeb" image="default.jpg" role="Communications Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Varen Rajoo" image="default.jpg" role="Communications Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Vladimir Avila" image="default.jpg" role="Communications Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Wayne Thayaparan" image="default.jpg" role="Communications Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-          </div>
-        </div>
 
-        {/* Events */}
-        <div className="max-w-6xl mx-auto shadow-[0_0_5px_rgba(0,0,0,0.2)]">
-          <div className="max-w-6xl h-[75px] mx-auto bg-white p-3 rounded-[4px_4px_0_0]">
-            <h2 className="text-3xl font-bold text-black text-center mx-auto w-[75%] border-b-2 p-2">Events</h2>
-          </div>
-          <div className="max-w-6xl h-auto mx-auto bg-white mb-12 p-4 pb-9 rounded-[0_0_4px_4px] grid grid-cols-1 gap-3 gap-y-9 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 team-grid">
-            <TeamCard name="Astar Alia Al Akkadi" image="default.jpg" role="Events Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Divya Prajapati" image="default.jpg" role="Events Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Leonardo Lopez-Papic" image="default.jpg" role="Events Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Lydia Aziz" image="Lydia Aziz.jpeg" role="Events Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Manija Said Dawod" image="default.jpg" role="Events Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Muhammad Taha" image="Muhammad Taha.jpg" role="Events Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Narendra Persaud" image="default.jpg" role="Events Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Pranjal Patel" image="default.jpg" role="Events Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Rameesha Khan" image="default.jpg" role="Events Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Rhea Braich" image="default.jpg" role="Events Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Zina Abdalhk" image="default.jpg" role="Events Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-          </div>
+          <dl className="flex flex-wrap gap-x-14 gap-y-6 border-t border-white/15 pt-8">
+            <div className="flex flex-col gap-1">
+              <dt className="t-num text-[30px] text-white md:text-[34px]">{TEAM_SIZE}</dt>
+              <dd className="text-sm text-on-navy">Members on the team</dd>
+            </div>
+            <div className="flex flex-col gap-1">
+              <dt className="t-num text-[30px] text-white md:text-[34px]">{TEAM.length}</dt>
+              <dd className="text-sm text-on-navy">Portfolios across the chapter</dd>
+            </div>
+            <div className="flex flex-col gap-1">
+              <dt className="t-num text-[30px] text-white md:text-[34px]">POD 377</dt>
+              <dd className="text-sm text-on-navy">Where to find us</dd>
+            </div>
+          </dl>
         </div>
+      </section>
 
-        {/* Finance */}
-        <div className="max-w-6xl mx-auto shadow-[0_0_5px_rgba(0,0,0,0.2)]">
-          <div className="max-w-6xl h-[75px] mx-auto bg-white p-3 rounded-[4px_4px_0_0]">
-            <h2 className="text-3xl font-bold text-black text-center mx-auto w-[75%] border-b-2 p-2">Finance</h2>
+      {/* ================================================================
+          Roster
+          ================================================================ */}
+      {TEAM.map((group, index) => (
+        <section
+          key={group.title}
+          className={index % 2 === 1 ? "border-y border-hairline bg-surface" : ""}
+        >
+          <div className="shell band">
+            <div className="mb-8 flex flex-col gap-3" data-reveal="">
+              <span className="eyebrow">{group.title}</span>
+              <h2 className="t-section-sm">{group.blurb}</h2>
+            </div>
+
+            <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
+              {group.members.map((member) => (
+                <TeamCard key={`${group.title}-${member.name}`} member={member} />
+              ))}
+            </ul>
           </div>
-          <div className="max-w-6xl h-auto mx-auto bg-white mb-12 p-4 pb-9 rounded-[0_0_4px_4px] grid grid-cols-1 gap-3 gap-y-9 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 team-grid">
-            <TeamCard name="Ciara Roberts" image="default.jpg" role="Finance Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Joanne Ly" image="Joanne Ly.jpg" role="Finance Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
+        </section>
+      ))}
+
+      {/* ================================================================
+          CTA
+          ================================================================ */}
+      <section className="border-t border-hairline bg-brand text-white">
+        <div className="shell band-sm flex flex-col items-start justify-between gap-8 md:flex-row md:items-center md:gap-12">
+          <div className="flex flex-col gap-3">
+            <h2 className="t-band">Want to get involved?</h2>
+            <p className="max-w-[600px] text-[16px] leading-[1.6] text-on-brand md:text-[17px]">
+              Membership is open to every biomedical engineering student at TMU. There is nothing to
+              sign up for, just come to an event or say hello.
+            </p>
           </div>
+          <Link href="/contact" className="btn btn-white">
+            Contact the team →
+          </Link>
         </div>
-
-        {/* Marketing */}
-        <div className="max-w-6xl mx-auto shadow-[0_0_5px_rgba(0,0,0,0.2)]">
-          <div className="max-w-6xl h-[75px] mx-auto bg-white p-3 rounded-[4px_4px_0_0]">
-            <h2 className="text-3xl font-bold text-black text-center mx-auto w-[75%] border-b-2 p-2">Marketing</h2>
-          </div>
-          <div className="max-w-6xl h-auto mx-auto bg-white mb-12 p-4 pb-9 rounded-[0_0_4px_4px] grid grid-cols-1 gap-3 gap-y-9 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 team-grid">
-            <TeamCard name="Abdullah Alsibai" image="default.jpg" role="Marketing Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Avrilmari Sacramento" image="default.jpg" role="Marketing Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Deyonta Fletcher" image="default.jpg" role="Marketing Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Dhwanil Rana" image="default.jpg" role="Marketing Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Gwen Titus" image="default.jpg" role="Marketing Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Nafiseh Rezagholi" image="default.jpg" role="Marketing Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Noemi Gaitan-Ruiz" image="default.jpg" role="Marketing Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-          </div>
-        </div>
-
-        {/* Operations */}
-        <div className="max-w-6xl mx-auto shadow-[0_0_5px_rgba(0,0,0,0.2)]">
-          <div className="max-w-6xl h-[75px] mx-auto bg-white p-3 rounded-[4px_4px_0_0]">
-            <h2 className="text-3xl font-bold text-black text-center mx-auto w-[75%] border-b-2 p-2">Operations</h2>
-          </div>
-          <div className="max-w-6xl h-auto mx-auto bg-white mb-12 p-4 pb-9 rounded-[0_0_4px_4px] grid grid-cols-1 gap-3 gap-y-9 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 team-grid">
-            <TeamCard name="Anthony Ma" image="default.jpg" role="Operations Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Hanady Zbib" image="default.jpg" role="Operations Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Hasan Obaid" image="Hasan Obaid.jpg" role="Operations Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Jazib Shaoor" image="default.jpg" role="Operations Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Rachna Patel" image="default.jpg" role="Operations Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Ruhab Baig" image="default.jpg" role="Operations Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Sarah Morelli" image="default.jpg" role="Operations Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Theepiga Jegatheesh" image="default.jpg" role="Operations Director" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-          </div>
-        </div>
-
-        {/* Website Developers */}
-        <div className="max-w-6xl mx-auto shadow-[0_0_5px_rgba(0,0,0,0.2)]">
-          <div className="max-w-6xl h-[75px] mx-auto bg-white p-3 rounded-[4px_4px_0_0]">
-            <h2 className="text-3xl font-bold text-black text-center mx-auto w-[75%] border-b-2 p-2">Website Developers</h2>
-          </div>
-          <div className="max-w-6xl h-auto mx-auto bg-white mb-12 p-4 pb-9 rounded-[0_0_4px_4px] grid grid-cols-1 gap-3 gap-y-9 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 team-grid">
-            <TeamCard name="Aydin Ghanbari" image="default.jpg" role="Website Developer" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Haris Siddiqui" image="default.jpg" role="Website Developer" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Hassan Laliwala" image="default.jpg" role="Website Developer" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Nithieshan Jeyaganeshan" image="default.jpg" role="Website Developer" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Samin Maharjan" image="default.jpg" role="Website Developer" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-          </div>
-        </div>
-
-        {/* First Year Representatives */}
-        <div className="max-w-6xl mx-auto shadow-[0_0_5px_rgba(0,0,0,0.2)]">
-          <div className="max-w-6xl h-[75px] mx-auto bg-white p-3 rounded-[4px_4px_0_0]">
-            <h2 className="text-3xl font-bold text-black text-center mx-auto w-[75%] border-b-2 p-2">First Year Representatives</h2>
-          </div>
-          <div className="max-w-6xl h-auto mx-auto bg-white mb-12 p-4 pb-9 rounded-[0_0_4px_4px] grid grid-cols-1 gap-3 gap-y-9 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 team-grid">
-            <TeamCard name="Cezmhar Sibal" image="default.jpg" role="First Year Representative" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Kaylin Dhanpaul" image="default.jpg" role="First Year Representative" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Kelsi Sumaway" image="default.jpg" role="First Year Representative" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Manasseh Mathiyas" image="default.jpg" role="First Year Representative" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Raghangi Gunaseelan" image="default.jpg" role="First Year Representative" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Shanath Sutharshan" image="default.jpg" role="First Year Representative" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Shayan Shahbaz" image="default.jpg" role="First Year Representative" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Sneha Chaudhary" image="default.jpg" role="First Year Representative" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-            <TeamCard name="Vithuja Vigneswaran" image="default.jpg" role="First Year Representative" bio="This is the member's self-description. It will appear as the card expands."></TeamCard>
-          </div>
-        </div>
-
-        <ChatWidget/>
-      </div>
-    </div>
+      </section>
+    </>
   );
 }

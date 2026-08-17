@@ -27,8 +27,14 @@ export default function Home() {
           ================================================================ */}
       {/* The video is the point of this band, so the copy sits centred over an
           even scrim rather than pinned left behind a heavy one-sided gradient.
-          The footage stays readable right across the frame. */}
-      <section className="relative flex min-h-[600px] items-center overflow-hidden bg-navy md:h-[780px]">
+          The footage reads right across the frame.
+
+          The source clip ended on a TMU logo card that animated through the
+          middle of the frame and collided with the copy. Rather than bend the
+          layout around three seconds of outro, the clip is trimmed to 30s; the
+          chapter's TMU affiliation is stated permanently in the navbar wordmark
+          and the footer lockup instead. */}
+      <section className="relative flex min-h-[620px] items-center overflow-hidden bg-navy md:h-[780px]">
         <HeroVideo poster="/media/campus-poster.jpg" src="/media/campus.mp4" />
 
         {/* Even top-to-bottom scrim, darkest where the type sits. */}
@@ -44,13 +50,13 @@ export default function Home() {
 
         <div className="shell relative z-10 flex w-full flex-col items-center gap-6 py-24 text-center md:gap-7">
           <h1 className="t-hero text-white">
-            Where academia meets <span className="text-salmon">industry</span>.
+            Where academia meets <span className="text-salmon">industry</span>
           </h1>
 
           <p className="t-lead max-w-[68ch] text-on-navy">
             As the Biomedical Engineering Society, we aim to provide a collaborative platform for
             students to connect, grow, develop their skills, and explore their passion in
-            biomedical engineering both academically and professionally.
+            biomedical engineering both academically and professionally
           </p>
 
           <div className="mt-2 flex flex-wrap items-center justify-center gap-3.5">
@@ -76,21 +82,23 @@ export default function Home() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-full items-center justify-between gap-4 bg-surface-2 py-6 transition-[background-color,box-shadow] duration-150 hover:bg-white hover:shadow-[inset_0_-3px_0_var(--color-brand)]"
+                className="group flex h-full items-center bg-surface-2 py-6 transition-[background-color,box-shadow] duration-150 hover:bg-white hover:shadow-[inset_0_-3px_0_var(--color-brand)]"
               >
                 <span className="flex flex-col gap-1">
                   <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">
                     {link.kicker}
                   </span>
-                  <span className="font-display text-lg font-semibold tracking-[-0.015em] text-[#2b3a52]">
+                  {/* Arrow sits with the label rather than pinned to the far
+                      edge of the card, which left the weight all on the left. */}
+                  <span className="font-display flex items-center gap-2 text-lg font-semibold tracking-[-0.015em] text-[#2b3a52]">
                     {link.label}
+                    <span
+                      className="text-base text-[#b3c0d1] transition-[color,transform] duration-150 group-hover:translate-x-0.5 group-hover:text-brand"
+                      aria-hidden="true"
+                    >
+                      ↗
+                    </span>
                   </span>
-                </span>
-                <span
-                  className="text-base text-[#b3c0d1] transition-colors group-hover:text-brand"
-                  aria-hidden="true"
-                >
-                  ↗
                 </span>
               </a>
             </li>

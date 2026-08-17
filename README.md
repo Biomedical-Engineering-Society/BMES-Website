@@ -127,9 +127,11 @@ ffmpeg -i input.mp4 -an -c:v libx264 -preset slow -crf 30 -pix_fmt yuv420p \
 
 The AI assistant answers from two sources:
 
-1. **Retrieved documents.** `scripts/ingest.ts` chunks the club PDFs and stores embeddings in
-   Supabase; a question is vectorised (via Hugging Face) to pull the relevant chunks. This carries
-   policy and history, and can be a year or two out of date.
+1. **Retrieved documents.** `scripts/ingest.ts` chunks the PDFs in
+   [`data/source-docs/`](data/source-docs/) and stores embeddings in Supabase; a question is
+   vectorised (via Hugging Face) to pull the relevant chunks. This carries policy and history, and
+   can be a year or two out of date. Those PDFs live outside `public/` on purpose: anything under
+   `public/` is downloadable by anyone who guesses the filename, and several contain contact details.
 2. **Live site context.** [`lib/siteContext.ts`](lib/siteContext.ts) builds a description of the
    website on every request from the same modules the pages render from: the route map, the chapter
    facts, every event in `data/events.json` with its dates resolved against today, the current

@@ -31,21 +31,24 @@ async function ingestDocuments() {
       process.env.SUPABASE_API!
     );
 
-    const MEDIA_DIR = "public/media";
-    
+    // Source documents live outside public/ on purpose: anything under public/
+    // is served at the site root, and these contain contact details that should
+    // not be downloadable by anyone who guesses the filename.
+    const SOURCE_DIR = "data/source-docs";
+
     // 1. Check directory
-    if (!fs.existsSync(MEDIA_DIR)) {
-      throw new Error(`Directory not found: ${MEDIA_DIR}`);
+    if (!fs.existsSync(SOURCE_DIR)) {
+      throw new Error(`Directory not found: ${SOURCE_DIR}`);
     }
 
-    const files = fs.readdirSync(MEDIA_DIR);
-    console.log(`[INFO] Found ${files.length} files in ${MEDIA_DIR}. Checking status...`);
+    const files = fs.readdirSync(SOURCE_DIR);
+    console.log(`[INFO] Found ${files.length} files in ${SOURCE_DIR}. Checking status...`);
 
     const newDocs = [];
 
     // 2. The "Smart" Loop
     for (const file of files) {
-      const filePath = path.join(MEDIA_DIR, file);
+      const filePath = path.join(SOURCE_DIR, file);
       const ext = path.extname(file).toLowerCase();
 
       // DYNAMIC CHECK: Is this file type in our LOADERS list?

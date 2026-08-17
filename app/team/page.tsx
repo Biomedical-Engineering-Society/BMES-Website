@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import TeamCard from "../components/TeamCard";
-import { TEAM, TEAM_SIZE } from "@/lib/team";
+import { TEAM, TEAM_SIZE, TEAM_YEAR } from "@/lib/team";
 
 export const metadata: Metadata = {
   title: "Team",
@@ -42,12 +42,12 @@ export default function TeamPage() {
 
           <dl className="flex flex-wrap gap-x-14 gap-y-6 border-t border-white/15 pt-8">
             <div className="flex flex-col gap-1">
-              <dt className="t-num text-[30px] text-white md:text-[34px]">{TEAM_SIZE}</dt>
-              <dd className="text-sm text-on-navy">Members on the team</dd>
+              <dt className="t-num text-[30px] text-white md:text-[34px]">{TEAM_YEAR}</dt>
+              <dd className="text-sm text-on-navy">Academic year</dd>
             </div>
             <div className="flex flex-col gap-1">
-              <dt className="t-num text-[30px] text-white md:text-[34px]">{TEAM.length}</dt>
-              <dd className="text-sm text-on-navy">Portfolios across the chapter</dd>
+              <dt className="t-num text-[30px] text-white md:text-[34px]">{TEAM_SIZE}</dt>
+              <dd className="text-sm text-on-navy">Executives on the team</dd>
             </div>
             <div className="flex flex-col gap-1">
               <dt className="t-num text-[30px] text-white md:text-[34px]">POD 377</dt>
@@ -83,16 +83,18 @@ export default function TeamPage() {
       {/* ================================================================
           CTA
           ================================================================ */}
-      <section className="border-t border-hairline bg-brand text-white">
+      {/* Same light closing band as About and Events, so every page ends the
+          same way instead of this one shouting in solid blue. */}
+      <section className="border-t border-hairline bg-surface">
         <div className="shell band-sm flex flex-col items-start justify-between gap-8 md:flex-row md:items-center md:gap-12">
           <div className="flex flex-col gap-3">
             <h2 className="t-band">Want to get involved?</h2>
-            <p className="max-w-[600px] text-[16px] leading-[1.6] text-on-brand md:text-[17px]">
+            <p className="max-w-[600px] text-[16px] leading-[1.6] text-muted md:text-[17px]">
               Membership is open to every biomedical engineering student at TMU. There is nothing to
               sign up for, just come to an event or say hello.
             </p>
           </div>
-          <Link href="/contact" className="btn btn-white">
+          <Link href="/contact" className="btn btn-primary">
             Contact the team →
           </Link>
         </div>

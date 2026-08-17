@@ -3,15 +3,12 @@
 import { useEffect, useState } from "react";
 
 /**
- * The campus timelapse behind the home page headline.
- *
- * Purely decorative, so there is no on-screen control: anyone who has asked
- * their system for reduced motion never sees it start, and gets the poster
- * frame instead. That is the setting the motion opt-out belongs to.
+ * The campus timelapse behind the home page headline. Decorative, and
+ * replaced by the poster frame under prefers-reduced-motion.
  */
 export default function HeroVideo({ poster, src }: { poster: string; src: string }) {
-  // Assume reduced motion until the browser says otherwise, so the very first
-  // paint is a still image rather than motion that has to be stopped.
+  // Assume reduced motion until the browser says otherwise, so the first paint
+  // is never motion the visitor asked not to see.
   const [reducedMotion, setReducedMotion] = useState(true);
 
   useEffect(() => {

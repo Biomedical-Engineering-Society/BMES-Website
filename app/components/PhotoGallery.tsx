@@ -15,9 +15,7 @@ const AUTOPLAY_MS = 5000;
  * Photo stage. Every photo is mounted and crossfaded on opacity, so moving
  * between them never shows a blank frame while a new file loads.
  *
- * It advances on its own until the visitor takes control, then stops for good:
- * an autoplaying carousel that keeps stealing the photo back from someone who
- * just chose one is worse than no autoplay at all.
+ * Advances on its own until the visitor takes control, then stops for good.
  */
 export default function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
   const [index, setIndex] = useState(0);
@@ -30,7 +28,7 @@ export default function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
     [count],
   );
 
-  /** Any deliberate interaction ends autoplay permanently. */
+  /** Any interaction ends autoplay permanently. */
   const take = useCallback((action: () => void) => {
     setTaken(true);
     action();
@@ -61,7 +59,7 @@ export default function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
         />
       ))}
 
-      {/* Just enough shading at the foot of the frame to hold the indicators. */}
+      {/* Shading at the foot of the frame, to hold the indicators. */}
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(180deg,rgba(7,27,51,0)_0%,rgba(7,27,51,0.55)_100%)]"
         aria-hidden="true"
@@ -85,8 +83,7 @@ export default function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
         <ArrowRightIcon size={20} />
       </button>
 
-      {/* Progress bars, not dots: while autoplay is running the active one fills
-          so the timing is visible rather than surprising. */}
+      {/* While autoplay runs, the active indicator fills in time with it. */}
       <div
         className="absolute inset-x-0 bottom-5 flex justify-center gap-2 px-5 md:bottom-6"
         role="group"

@@ -16,8 +16,7 @@ const STATS = [
 
 export default function Home() {
   const featured = featuredEvents(3);
-  // Between terms the showcase falls back to recent events, so the heading has
-  // to stop promising something that has not been announced yet.
+  // Between terms nothing is upcoming and the showcase falls back to recent events.
   const hasUpcoming = upcomingEvents().length > 0;
 
   return (
@@ -25,24 +24,14 @@ export default function Home() {
       {/* ================================================================
           Hero
           ================================================================ */}
-      {/* The video is the point of this band, so the copy sits centred over an
-          even scrim rather than pinned left behind a heavy one-sided gradient.
-          The footage reads right across the frame.
-
-          The source clip ended on a TMU logo card that animated through the
-          middle of the frame and collided with the copy. Rather than bend the
-          layout around three seconds of outro, the clip is trimmed to 30s; the
-          chapter's TMU affiliation is stated permanently in the navbar wordmark
-          and the footer lockup instead. */}
       <section className="relative flex min-h-[620px] items-center overflow-hidden bg-navy md:h-[780px]">
         <HeroVideo poster="/media/campus-poster.jpg" src="/media/campus.mp4" />
 
-        {/* Even top-to-bottom scrim, darkest where the type sits. */}
+        {/* Scrim and vignette, so the headline stays legible over any frame. */}
         <div
           className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,27,51,0.78)_0%,rgba(7,27,51,0.55)_38%,rgba(7,27,51,0.62)_70%,rgba(7,27,51,0.88)_100%)]"
           aria-hidden="true"
         />
-        {/* Centred vignette to hold the edges down without dimming the middle. */}
         <div
           className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,rgba(7,27,51,0)_35%,rgba(7,27,51,0.6)_100%)]"
           aria-hidden="true"
@@ -72,7 +61,6 @@ export default function Home() {
 
       {/* ================================================================
           Quick links
-          Deliberately quiet at rest so it never competes with the hero.
           ================================================================ */}
       <section aria-label="Quick links" className="border-b border-hairline">
         <ul className="quick-links">
@@ -88,8 +76,6 @@ export default function Home() {
                   <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">
                     {link.kicker}
                   </span>
-                  {/* Arrow sits with the label rather than pinned to the far
-                      edge of the card, which left the weight all on the left. */}
                   <span className="font-display flex items-center gap-2 text-lg font-semibold tracking-[-0.015em] text-[#2b3a52]">
                     {link.label}
                     <span

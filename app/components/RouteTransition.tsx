@@ -5,15 +5,12 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 /**
- * The brand moment between pages.
+ * A white curtain carrying the BMES mark, shown while an internal navigation
+ * is in flight.
  *
- * A white curtain carrying the BMES mark drops the instant an internal link is
- * clicked and lifts once the new route has painted, so navigation reads as one
- * continuous branded motion instead of a hard content swap.
- *
- * The click listener runs in the capture phase because Next's Link intercepts
- * the bubble phase; without it the curtain would only appear after the route
- * had already changed, which is too late to cover anything.
+ * The click listener runs in the capture phase: Next's Link intercepts the
+ * bubble phase, so a bubble-phase listener would only fire after the route had
+ * already changed.
  */
 
 const HOLD_AFTER_ROUTE_CHANGE = 260;
@@ -21,10 +18,9 @@ const SAFETY_TIMEOUT = 2000;
 
 export default function RouteTransition() {
   const pathname = usePathname();
-  // Starts down, deliberately. Rendering it active would bake an opaque white
-  // overlay into every prerendered page, so a slow connection or a JS failure
-  // would leave the visitor staring at a blank screen. The curtain exists to
-  // cover client-side navigation, and a first page load is not one.
+  // Must start inactive: an active initial state bakes an opaque overlay into
+  // every prerendered page, which a slow connection or a JS failure would leave
+  // covering the content.
   const [active, setActive] = useState(false);
   const isFirstRender = useRef(true);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

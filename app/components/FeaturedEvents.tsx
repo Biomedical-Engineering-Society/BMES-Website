@@ -13,11 +13,10 @@ import {
 } from "@/lib/events";
 
 /**
- * The home page events showcase: one large crossfading panel driven by the
- * selectable rows beside it and by the arrow buttons above it.
+ * The home page events showcase: a crossfading panel driven by the selectable
+ * rows beside it and the arrow buttons above it.
  *
- * All covers are rendered up front and toggled with opacity rather than swapping
- * a single `src`, so the crossfade is real and no image is ever fetched late.
+ * Every cover is mounted and toggled on opacity, so no image is fetched late.
  */
 export default function FeaturedEvents({
   events,
@@ -83,8 +82,8 @@ export default function FeaturedEvents({
             />
           ))}
 
-          {/* On narrow screens the caption fills more of the panel, so the scrim
-              has to start earlier to keep it readable. */}
+          {/* The caption fills more of the panel on narrow screens, so the
+              scrim starts earlier there. */}
           <div
             className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,27,51,0.1)_8%,rgba(7,27,51,0.95)_100%)] md:bg-[linear-gradient(180deg,rgba(7,27,51,0.12)_34%,rgba(7,27,51,0.93)_100%)]"
             aria-hidden="true"

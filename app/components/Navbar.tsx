@@ -16,16 +16,15 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Close the mobile menu whenever the route changes. Adjusting state during
-  // render rather than in an effect: React re-runs this component immediately
-  // with the new value, so the menu never paints open on the new page.
+  // Close the mobile menu on route change. Adjusted during render, not in an
+  // effect, so the menu never paints open on the new page.
   const [lastPathname, setLastPathname] = useState(pathname);
   if (lastPathname !== pathname) {
     setLastPathname(pathname);
     setMenuOpen(false);
   }
 
-  // A hairline at rest, a whisper of a shadow once the page moves under it.
+  // Drives the scrolled state of the header.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
@@ -43,9 +42,7 @@ export default function Navbar() {
 
   const contactActive = isActive(pathname, "/contact");
 
-  // Solid at rest, then glass once the page moves under it: content scrolling
-  // past stays faintly visible through the header instead of disappearing
-  // behind an opaque bar.
+  // Solid at rest, glass once the page scrolls under it.
   return (
     <header
       className={`sticky top-0 z-50 border-b transition-[background-color,box-shadow,border-color] duration-300 ${

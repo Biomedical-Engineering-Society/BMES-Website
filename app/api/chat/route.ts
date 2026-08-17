@@ -94,8 +94,8 @@ ${buildSiteContext()}
 
     console.log("Sending to Groq...");
 
-    // The widget does not render the retrieved sources, so this fallback has to
-    // stand on its own rather than point at "the documents below".
+    // Shown if generation fails. The widget does not render the retrieved
+    // sources, so this has to stand on its own.
     let answer = `I could not put an answer together just now. Try again in a moment, or email ${CONTACT.email}.`;
     
     try {

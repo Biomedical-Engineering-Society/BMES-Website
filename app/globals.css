@@ -112,8 +112,7 @@ body {
    Design width is 1440px with an 88px page gutter and a 48px nav gutter.
    ========================================================================== */
 
-/* Content width, in one place so full-bleed bands can match the shell exactly
-   and never let their own background show past the content edge. */
+/* Content width, in one place so full-bleed bands can match the shell exactly. */
 :root {
   --shell-max: 1440px;
 }
@@ -354,13 +353,11 @@ body {
   }
 
   /* ------------------------------------------------------------------
-     Quick links band
+     Quick links band. Full bleed, so every pixel of the row is part of a
+     card and responds to hover.
 
-     Runs edge to edge so there is no dead strip beside the first and last
-     cards on a monitor wider than the content. The outer cards absorb that
-     leftover width and pad their contents back to where the shell would have
-     put them, so the row still lines up at the design width while every pixel
-     of the band belongs to a card and lights up on hover.
+     Padding lives here and not as a utility on the anchor: Tailwind's
+     utilities layer wins over components, so a px-* class would override it.
      ------------------------------------------------------------------ */
 
   .quick-links {
@@ -373,6 +370,7 @@ body {
   .quick-links > li > a {
     padding-inline: 24px;
   }
+
 
   @media (min-width: 640px) {
     .quick-links {

@@ -28,10 +28,9 @@ export const TEAM_YEAR = "2026 to 27";
 /**
  * The 2026/27 executive team.
  *
- * Phone numbers and personal email addresses from the roster sheet are
- * deliberately left out: this page is public, and nothing here should hand a
- * scraper a student's contact details. Everything routes through
- * bmes@torontomu.ca on the Contact page instead.
+ * Do not add phone numbers or personal email addresses. This page is public and
+ * the chat assistant reads from this file; enquiries route through
+ * bmes@torontomu.ca on the Contact page.
  *
  * Directors and first year representatives are not listed yet. Add a second
  * TeamGroup here when that roster is confirmed and the page picks it up.

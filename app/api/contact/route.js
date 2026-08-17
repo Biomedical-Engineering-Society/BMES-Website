@@ -3,10 +3,9 @@ import { Resend } from "resend";
 /**
  * Contact form endpoint.
  *
- * The Resend client is created per request rather than at module scope: with no
- * RESEND_API_KEY present its constructor throws, and at module scope that threw
- * during `next build` and failed the whole production build. Building the site
- * should never depend on a mail key being configured.
+ * The Resend client is built per request, not at module scope: its constructor
+ * throws without a RESEND_API_KEY, and at module scope that fails `next build`.
+ * Building the site must not depend on a mail key being configured.
  */
 
 const TO_ADDRESS = process.env.CONTACT_TO_EMAIL || "bmes@torontomu.ca";

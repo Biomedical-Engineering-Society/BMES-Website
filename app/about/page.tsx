@@ -91,9 +91,8 @@ export default function AboutPage() {
           className="absolute inset-0 bg-[linear-gradient(100deg,rgba(7,27,51,0.92)_0%,rgba(7,27,51,0.76)_45%,rgba(9,38,74,0.55)_100%)]"
           aria-hidden="true"
         />
-        {/* max-width lives on the inner block: putting it on .shell would override
-            the shell's own max-width and centre the text instead of setting it
-            against the page gutter. */}
+        {/* max-width goes on the inner block, never on .shell itself, or it
+            overrides the shell width and centres the column. */}
         <div className="shell relative z-10 py-16 md:py-[78px]">
           <div className="flex max-w-[860px] flex-col gap-4.5">
             <span className="eyebrow eyebrow-on-dark">About us</span>

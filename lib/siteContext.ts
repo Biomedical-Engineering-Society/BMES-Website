@@ -12,13 +12,11 @@ import { TEAM, TEAM_YEAR } from "./team";
 /**
  * The assistant's map of this website.
  *
- * Built from the same modules the pages render from, so it can never describe a
- * version of the site that no longer exists. Add an event to data/events.json or
- * a member to lib/team.ts and the chatbot knows about it on the next request,
- * with no separate document to re-ingest.
- *
- * This sits alongside the RAG context from the club's PDFs: the PDFs carry
- * policy and history, this carries what is actually on the site right now.
+ * Built from the same modules the pages render from, so it stays in step with
+ * the site automatically: add an event to data/events.json or a member to
+ * lib/team.ts and the assistant knows on the next request, with no document to
+ * re-ingest. Sits alongside the RAG context from the club PDFs, which carry
+ * policy and history.
  */
 
 /** Every route, so the assistant can point people at the right page. */

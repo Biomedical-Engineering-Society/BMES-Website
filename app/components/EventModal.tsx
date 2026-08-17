@@ -9,12 +9,9 @@ const FOCUSABLE =
   'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])';
 
 /**
- * Event details dialog.
- *
- * Fixed to the viewport rather than positioned inside the page, so it stays
- * centred no matter how far the visitor has scrolled the calendar. Closes on
- * Esc, on a backdrop click and on either close control, keeps Tab inside itself
- * while open, and hands focus back to whatever opened it.
+ * Event details dialog. Fixed to the viewport, so it stays centred however far
+ * the page has been scrolled. Closes on Esc, backdrop click or either close
+ * control, traps Tab while open, and restores focus on close.
  */
 export default function EventModal({
   event,

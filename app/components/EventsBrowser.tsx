@@ -122,10 +122,9 @@ function EventCard({ event, today }: { event: BmesEvent; today: string }) {
 /* ------------------------------------------------------------------ */
 
 export default function EventsBrowser({ serverToday }: { serverToday: string }) {
-  // The page is prerendered, so the date baked into its HTML is the build date.
-  // useSyncExternalStore lets the server snapshot drive the markup that gets
-  // hydrated and the client snapshot take over immediately afterwards, so the
-  // page can never disagree with its own HTML and never shows a stale date.
+  // The page is prerendered, so the date in its HTML is the build date.
+  // useSyncExternalStore hydrates against the server snapshot and switches to
+  // the client's straight after, which keeps hydration matched and the date current.
   const today = useSyncExternalStore(subscribeToNothing, todayISO, () => serverToday);
 
   const [view, setView] = useState<View>("list");
@@ -134,9 +133,8 @@ export default function EventsBrowser({ serverToday }: { serverToday: string }) 
   const upcoming = useMemo(() => upcomingEvents(today), [today]);
   const past = useMemo(() => pastEvents(today), [today]);
 
-  // Between terms there is nothing upcoming, and defaulting to that filter would
-  // land visitors on an empty page. Show everything instead until the next
-  // event is announced.
+  // Between terms nothing is upcoming, and that filter would land on an empty
+  // page, so default to showing everything.
   const [filter, setFilter] = useState<Filter>(() => (upcoming.length > 0 ? "Upcoming" : "All"));
 
   /** The soonest upcoming event headlines the page. Falls back to the most recent one. */
@@ -406,8 +404,7 @@ export default function EventsBrowser({ serverToday }: { serverToday: string }) 
                   ))}
                 </div>
 
-                {/* Keyed on the month so the whole grid fades in on navigation
-                    rather than snapping to the new numbers. */}
+                {/* Keyed on the month, so the grid fades in when it changes. */}
                 <div key={`${cursor.year}-${cursor.month}`} className="grid grid-cols-7 gap-2 [animation:monthIn_300ms_ease-out]">
                   {calendar.map((cell, index) => {
                     if (!cell.day) {

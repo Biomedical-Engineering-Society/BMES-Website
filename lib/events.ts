@@ -26,10 +26,9 @@ const ISO_FORMATTER = new Intl.DateTimeFormat("en-CA", {
 /**
  * Today as YYYY-MM-DD in Toronto.
  *
- * Deliberately timezone-pinned rather than using the runtime's local date: the
- * server renders in UTC and the browser renders in the visitor's zone, and an
- * unpinned date makes those two disagree for part of every day, which both
- * breaks hydration and flips tonight's event into the past.
+ * Pinned to the timezone on purpose. The server runs in UTC and the browser in
+ * the visitor's zone; an unpinned date makes the two disagree for part of every
+ * day, which breaks hydration and flips tonight's event into the past.
  */
 export function todayISO(): string {
   return ISO_FORMATTER.format(new Date());

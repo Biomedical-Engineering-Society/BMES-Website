@@ -5,11 +5,8 @@ import { useState } from "react";
 import type { Member } from "@/lib/team";
 
 /**
- * One person.
- *
- * Cards with a written bio become a button that expands it in place; cards
- * without one stay as plain, non-interactive content rather than offering an
- * affordance that does nothing.
+ * One person. Cards with a written bio expand it in place on click; cards
+ * without one are not interactive.
  */
 export default function TeamCard({ member }: { member: Member }) {
   const [open, setOpen] = useState(false);

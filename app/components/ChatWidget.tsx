@@ -17,11 +17,7 @@ const SUGGESTED_PROMPTS = [
   "Who is on the exec team?",
 ];
 
-/**
- * The assistant links to pages of this site. Route those through next/link so
- * they navigate client side and keep the page transition, and send anything
- * external to a new tab so the conversation is not lost.
- */
+/** Site links navigate client side; external links open in a new tab. */
 const markdownComponents: Components = {
   a({ href, children }) {
     const target = href ?? "";
@@ -38,7 +34,7 @@ const markdownComponents: Components = {
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  /** Silences the launcher's attention ring once the visitor has engaged once. */
+  /** Stops the launcher's echo ring after the first open. */
   const [hasOpened, setHasOpened] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -48,8 +44,8 @@ export default function ChatWidget() {
   const inputRef = useRef<HTMLInputElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
 
-  // Closing the panel unmounts it, so focus has to be handed back deliberately
-  // or it falls to document.body and keyboard users lose their place.
+  // Closing unmounts the panel, so focus has to be handed back explicitly or it
+  // falls to document.body.
   const close = useCallback(() => {
     setIsOpen(false);
     launcherRef.current?.focus();
@@ -89,8 +85,8 @@ export default function ChatWidget() {
         });
         const data = await res.json();
 
-        // A failed request still resolves, so without this an HTTP 500 would
-        // append a message whose content is undefined and render an empty bubble.
+        // A failed request still resolves, so an unchecked 500 would append a
+        // message with an undefined body and render an empty bubble.
         if (!res.ok || typeof data.answer !== "string") {
           throw new Error(data.error ?? "Chat request failed");
         }
@@ -140,8 +136,7 @@ export default function ChatWidget() {
             </button>
           </div>
 
-          {/* Conversation. role="log" so a screen reader announces replies as
-              they arrive instead of the panel updating silently. */}
+          {/* Conversation. role="log" announces replies as they arrive. */}
           <div
             role="log"
             aria-live="polite"
@@ -239,9 +234,7 @@ export default function ChatWidget() {
         </div>
       )}
 
-      {/* A plain circular launcher in a softened red drawn from the logo's ECG
-          line. The echo ring settles the moment the visitor opens the chat, so
-          it never nags someone who already found it. */}
+      {/* Launcher */}
       <div className="relative">
         {!isOpen && !hasOpened && (
           <>
@@ -269,7 +262,7 @@ export default function ChatWidget() {
         >
           {isOpen ? <CloseIcon size={22} /> : <ChatIcon size={24} />}
 
-          {/* Name on hover, so the button stays a button. */}
+          {/* Name on hover */}
           <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-lg bg-navy px-3 py-2 text-[13px] font-bold text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 max-md:hidden">
             Ask {ASSISTANT_NAME}
           </span>

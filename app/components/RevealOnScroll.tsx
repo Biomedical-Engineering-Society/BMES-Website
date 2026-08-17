@@ -6,11 +6,10 @@ import { useEffect } from "react";
 /**
  * Scroll reveals, without wrapper elements.
  *
- * Mounted once in the layout. Any element anywhere in the app can opt in by
- * adding a bare `data-reveal` attribute; this watches the document and flips it
- * to `data-reveal="shown"` when it comes into view. Doing it centrally means
- * server components stay server components and grid or flex parents never gain
- * a stray wrapper div that would break their layout.
+ * Mounted once in the layout. Any element opts in with a bare `data-reveal`
+ * attribute; this flips it to `data-reveal="shown"` when it enters the
+ * viewport. Observing centrally keeps server components on the server and adds
+ * no wrapper div inside grid or flex parents.
  */
 export default function RevealOnScroll() {
   const pathname = usePathname();

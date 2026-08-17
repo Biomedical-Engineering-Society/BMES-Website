@@ -17,9 +17,6 @@ export default function TeamPage() {
           Header
           ================================================================ */}
       <section className="relative overflow-hidden bg-navy text-white">
-        {/* Lighter than the other photo heroes: the point of this one is the
-            people in it, so the image carries more of the frame and the scrim
-            only does as much as the type needs. */}
         <Image
           src="/media/Group_photo.jpg"
           alt=""
@@ -44,8 +41,6 @@ export default function TeamPage() {
               workshop, panel and conference on this site is run by the people below.
             </p>
 
-            {/* Facts as quiet chips rather than a ruled stat row, which cut
-                across the photograph. */}
             <ul className="mt-3 flex flex-wrap gap-2.5">
               <li className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-[13px] font-semibold text-white backdrop-blur-sm">
                 {TEAM_YEAR} <span className="font-normal text-on-navy">academic year</span>
@@ -84,8 +79,6 @@ export default function TeamPage() {
       {/* ================================================================
           CTA
           ================================================================ */}
-      {/* Same light closing band as About and Events, so every page ends the
-          same way instead of this one shouting in solid blue. */}
       <section className="border-t border-hairline bg-surface">
         <div className="shell band-sm flex flex-col items-start justify-between gap-8 md:flex-row md:items-center md:gap-12">
           <div className="flex flex-col gap-3">

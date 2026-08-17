@@ -1,117 +1,163 @@
 "use client";
-import ReactMarkdown from "react-markdown";
-import { useState, useRef, useEffect } from "react";
 
-// Define what a message looks like
+import ReactMarkdown from "react-markdown";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ChatIcon, CloseIcon, SendIcon } from "./BrandIcons";
+import { ASSISTANT_NAME, CONTACT } from "@/lib/site";
+
 type Message = {
   role: "user" | "ai";
   content: string;
-  sources?: any[]; // Optional sources for AI messages
 };
+
+const SUGGESTED_PROMPTS = [
+  "When is the next event?",
+  "Where do I find past exams?",
+  "How do I join the exec team?",
+];
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
-
-  // OLD: const [response, setResponse] = useState(null);
-  // NEW: Store an array of messages
   const [messages, setMessages] = useState<Message[]>([]);
-
   const [loading, setLoading] = useState(false);
 
-  // Auto-scroll to bottom when new message arrives
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+
+  // Closing the panel unmounts it, so focus has to be handed back deliberately
+  // or it falls to document.body and keyboard users lose their place.
+  const close = useCallback(() => {
+    setIsOpen(false);
+    launcherRef.current?.focus();
+  }, []);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, loading]);
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+  useEffect(() => {
+    if (isOpen) inputRef.current?.focus();
+  }, [isOpen]);
 
-    // 1. Add User Message immediately
-    const userMessage: Message = { role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
+  // Esc closes the panel from anywhere inside it.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, close]);
 
-    // 2. Clear Input and Set Loading
-    const currentInput = input; // Save for API call
-    setInput("");
-    setLoading(true);
+  const send = useCallback(
+    async (text: string) => {
+      const question = text.trim();
+      if (!question || loading) return;
 
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        body: JSON.stringify({ message: currentInput }),
-      });
-      const data = await res.json();
+      setMessages((prev) => [...prev, { role: "user", content: question }]);
+      setInput("");
+      setLoading(true);
 
-      // 3. Add AI Message
-      const aiMessage: Message = {
-        role: "ai",
-        content: data.answer,
-        sources: data.matches, // Save sources if you want to show them
-      };
-      setMessages((prev) => [...prev, aiMessage]);
-    } catch (error) {
-      console.error(error);
-      setMessages((prev) => [
-        ...prev,
-        { role: "ai", content: "Sorry, something went wrong." },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  };
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          body: JSON.stringify({ message: question }),
+        });
+        const data = await res.json();
+
+        // A failed request still resolves, so without this an HTTP 500 would
+        // append a message whose content is undefined and render an empty bubble.
+        if (!res.ok || typeof data.answer !== "string") {
+          throw new Error(data.error ?? "Chat request failed");
+        }
+
+        setMessages((prev) => [...prev, { role: "ai", content: data.answer }]);
+      } catch (error) {
+        console.error(error);
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "ai",
+            content: `Sorry, something went wrong on my end. Try again in a moment, or email ${CONTACT.email}.`,
+          },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loading],
+  );
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
-      {/* CHAT WINDOW */}
+    <div className="fixed bottom-5 right-5 z-[60] flex flex-col items-end gap-3.5 md:bottom-[34px] md:right-[34px]">
       {isOpen && (
-        <div className="mb-4 w-[400px] h-[600px] bg-white rounded-xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
+        <div
+          role="dialog"
+          aria-label={`Ask ${ASSISTANT_NAME}, the BMES student assistant`}
+          className="flex h-[min(600px,calc(100dvh-9rem))] w-[min(356px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-hairline bg-white shadow-[0_30px_60px_-30px_rgba(7,27,51,0.55)]"
+        >
           {/* Header */}
-          <div className="bg-blue-600 p-4 flex justify-between items-center text-white shadow-md">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🤖</span>
-              <div>
-                <h3 className="font-bold text-sm">BMES Assistant</h3>
-                <p className="text-xs text-blue-100 opacity-80">
-                  Powered by Llama 3
-                </p>
-              </div>
-            </div>
+          <div className="flex items-center justify-between gap-4 bg-navy px-5 py-4 text-white">
+            <span className="flex flex-col gap-[3px]">
+              <span className="font-display text-lg font-bold leading-none">
+                Ask {ASSISTANT_NAME}
+              </span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-on-navy-soft">
+                BMES student assistant
+              </span>
+            </span>
             <button
-              onClick={() => setIsOpen(false)}
-              className="text-white hover:bg-blue-700 w-8 h-8 rounded-full flex items-center justify-center transition"
+              type="button"
+              onClick={close}
+              aria-label="Close chat"
+              className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-white/12 text-white transition-colors hover:bg-white/25"
             >
-              ✕
+              <CloseIcon size={16} />
             </button>
           </div>
 
-          {/* Messages Area */}
-          <div className="flex-1 p-4 overflow-y-auto bg-gray-50 space-y-4">
+          {/* Conversation. role="log" so a screen reader announces replies as
+              they arrive instead of the panel updating silently. */}
+          <div
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions text"
+            className="scrollbar-slim flex-1 space-y-3.5 overflow-y-auto bg-surface-2 p-5"
+          >
             {messages.length === 0 && (
-              <div className="text-center text-gray-400 mt-20">
-                <p className="text-4xl mb-2">👋</p>
-                <p className="text-sm">Hi! Ask me about BMES.</p>
+              <div className="flex flex-col gap-2.5">
+                <p className="text-sm leading-relaxed text-muted">
+                  Courses, the exam bank, upcoming events, joining a committee. Ask away.
+                </p>
+                {SUGGESTED_PROMPTS.map((prompt) => (
+                  <button
+                    key={prompt}
+                    type="button"
+                    onClick={() => send(prompt)}
+                    className="rounded-[10px] border border-hairline bg-white px-3.5 py-3 text-left text-sm font-medium text-ink transition-colors hover:border-brand hover:bg-brand-tint"
+                  >
+                    {prompt}
+                  </button>
+                ))}
               </div>
             )}
 
-            {/* Loop through history */}
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`flex ${
-                  msg.role === "user" ? "justify-end" : "justify-start"
-                }`}
+                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-sm ${
+                  className={`max-w-[86%] rounded-2xl px-3.5 py-2.5 text-sm ${
                     msg.role === "user"
-                      ? "bg-blue-600 text-white rounded-br-none" // User Bubble
-                      : "bg-white text-gray-800 border border-gray-100 rounded-bl-none" // AI Bubble
+                      ? "rounded-br-md bg-brand text-white"
+                      : "rounded-bl-md border border-hairline bg-white text-ink shadow-[0_2px_10px_rgba(7,27,51,0.05)]"
                   }`}
                 >
                   {msg.role === "ai" ? (
-                    <div className="prose prose-sm max-w-none text-gray-800 prose-a:text-blue-600 prose-a:font-bold hover:prose-a:text-blue-800 prose-p:leading-relaxed prose-p:mb-2 last:prose-p:mb-0">
+                    <div className="chat-md">
                       <ReactMarkdown>{msg.content}</ReactMarkdown>
                     </div>
                   ) : (
@@ -121,53 +167,66 @@ export default function ChatWidget() {
               </div>
             ))}
 
-            {/* Loading Indicator */}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-white p-3 rounded-2xl rounded-bl-none border border-gray-100 shadow-sm flex gap-1 items-center">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-75"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></div>
+                <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-md border border-hairline bg-white px-4 py-3">
+                  <span className="sr-only" role="status">
+                    Thinking
+                  </span>
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-brand/60" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-brand/60 [animation-delay:120ms]" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-brand/60 [animation-delay:240ms]" />
                 </div>
               </div>
             )}
 
-            {/* Invisible div to auto-scroll to */}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area */}
-          <div className="p-3 bg-white border-t border-gray-100">
-            <div className="relative flex items-center">
+          {/* Composer */}
+          <div className="border-t border-hairline bg-white p-3">
+            <div className="relative flex items-center rounded-full border border-hairline bg-[#f7f9fd] p-1">
+              <label htmlFor="chat-input" className="sr-only">
+                Ask {ASSISTANT_NAME} a question
+              </label>
               <input
-                className="w-full p-3 pr-12 bg-gray-100 border-none rounded-full focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm text-black placeholder-gray-400 transition-all"
+                id="chat-input"
+                ref={inputRef}
+                className="w-full bg-transparent py-2 pl-4 pr-11 text-sm text-ink outline-none placeholder:text-muted"
                 placeholder="Type a question..."
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                onChange={(event) => setInput(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") send(input);
+                }}
               />
               <button
-                onClick={sendMessage}
+                type="button"
+                onClick={() => send(input)}
                 disabled={loading || !input.trim()}
-                className="absolute right-2 p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm w-8 h-8 flex items-center justify-center"
+                aria-label="Send message"
+                className="absolute right-1 flex h-8 w-8 items-center justify-center rounded-full bg-brand text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:bg-[#c3cede]"
               >
-                ➤
+                <SendIcon />
               </button>
             </div>
-            <p className="text-[10px] text-center text-gray-400 mt-2">
+            <p className="mt-2 text-center text-[12px] text-muted">
               AI can make mistakes. Check important info.
             </p>
           </div>
         </div>
       )}
 
-      {/* TOGGLE BUTTON */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="group flex items-center justify-center w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 hover:scale-105 transition-all duration-300"
+        ref={launcherRef}
+        type="button"
+        onClick={() => setIsOpen((open) => !open)}
+        aria-expanded={isOpen}
+        aria-label={isOpen ? "Close chat" : `Ask ${ASSISTANT_NAME}, the BMES student assistant`}
+        className="inline-flex items-center gap-3 rounded-full bg-brand px-5 py-4 text-[15px] font-bold text-white shadow-[0_18px_36px_-18px_rgba(21,108,206,0.9)] transition-colors hover:bg-brand-hover md:px-6"
       >
-        <span className="text-2xl group-hover:hidden">💬</span>
-        <span className="text-xl hidden group-hover:block">✕</span>
+        {isOpen ? <CloseIcon size={20} /> : <ChatIcon />}
+        <span className="hidden sm:inline">Ask {ASSISTANT_NAME}</span>
       </button>
     </div>
   );

@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import Groq from "groq-sdk"; //INDUSTRY STANDARD: Specialized Inference Engine
+import { ASSISTANT_NAME, CONTACT, LINKS } from "@/lib/site";
 
 export async function POST(req: NextRequest) {
   try {
@@ -43,20 +44,21 @@ export async function POST(req: NextRequest) {
     
     // The "System Prompt" (The personality & rules)
     const systemInstruction = `
-You are "BAI" a helpful BMES (Biomedical Engineering Society) student chat assistant to spread the knowledge about the club.
+You are "${ASSISTANT_NAME}" a helpful BMES (Biomedical Engineering Society) student chat assistant to spread the knowledge about the club.
 You are chatting with another student on the website.
 Your goal is to answer the user's question clearly, accurately, and concisely using the context provided.
 Act as if you are chatting with the user in a messaging app (keep it short and conversational).
 
 Instructions:
-1. Answer ONLY what is asked with conversational tone (as if you were texting). Do not add extra "Welcome" messages or huge summaries and 
-2. Output your answer in nice visually appealing markdown format (use bullet points, bold text, link colors, etc. where appropriate).
-3. If you are unsure and the answer is not explicitly written in the documentation, say "Sorry, I actually don't have that info handy right now!  Your best bet is to DM us on Instagram or email the team directly."
-4. Keep the tone convertational, professional, friendly. 
-5. Do not add unnecessary marketing fluff.
-6. **Be Conversational:** Write like a human text message.
-7. **NO HEADERS:** Do not use markdown titles (like # or ##). They look weird in chat.
-8. **Short Paragraphs:** Avoid walls of text. Break things up by using spaces and short paragraphs.
+1. You MUST ONLY answer questions related to BMES (Biomedical Engineering Society) or the university site. If the user asks about ANY other topic (e.g., coding, general knowledge, other clubs, unrelated general chat), you must strictly refuse to answer and redirect them back to BMES.
+2. Answer ONLY what is asked with conversational tone (as if you were texting). Do not add extra "Welcome" messages or huge summaries. You are aware of the entire website and its general context, use your best judgment but stick ONLY to BMES topics.
+3. Output your answer in nice visually appealing markdown format (use bullet points, bold text, etc. where appropriate).
+4. If you are unsure and the answer is not explicitly written in the documentation or your general knowledge about BMES, say "Sorry, I actually don't have that info handy right now!  Your best bet is to DM us on Instagram or email the team directly."
+5. Keep the tone conversational, professional, friendly.
+6. Do not add unnecessary marketing fluff.
+7. **Be Conversational:** Write like a human text message.
+8. **NO HEADERS:** Do not use markdown titles (like # or ##). They look weird in chat.
+9. **Short Paragraphs:** Avoid walls of text. Break things up by using spaces and short paragraphs.
 
 **NEVER ask the user for documents.** They are students, they don't have your files.
 
@@ -64,11 +66,12 @@ Instructions:
 
 "Sorry, I actually don't have that info handy right now!  Your best bet is to DM us on Instagram or email the team directly."
 
-If the user asks about contact info, social media, or how to get involved or how to join the community or reach out or contact, along with the contacts from context documents and use these with preety markdowns:
-* Email: [bmes@torontomu.ca](mailto:bmes@torontomu.ca)
-* Instagram: [Instagram](https://www.instagram.com/bmes.tmu/)
-* LinkedIn: [LinkedIn](https://www.linkedin.com/company/bmes-tmu/)
-* Discord: [Join Discord](https://discord.com/invite/QgYQfp6)
+If the user asks about contact info, social media, how to get involved, how to join the community, or how to reach out, share these links as markdown alongside anything relevant from the context documents:
+* Email: [${CONTACT.email}](mailto:${CONTACT.email})
+* Instagram: [Instagram](${LINKS.instagram})
+* LinkedIn: [LinkedIn](${LINKS.linkedin})
+* Linktree: [Everything in one place](${LINKS.linktree})
+* Office: ${CONTACT.office}, ${CONTACT.building}
 
 NEVER use HTML tags (like <b> or <br>). Never paste a raw https:// URL. Use STRICT MARKDOWN for links. 
 `
@@ -77,7 +80,9 @@ NEVER use HTML tags (like <b> or <br>). Never paste a raw https:// URL. Use STRI
 
     console.log("Sending to Groq...");
 
-    let answer = "I couldn't generate a summary right now, but please check the relevant documents below!";
+    // The widget does not render the retrieved sources, so this fallback has to
+    // stand on its own rather than point at "the documents below".
+    let answer = `I could not put an answer together just now. Try again in a moment, or email ${CONTACT.email}.`;
     
     try {
       // We use Groq because it runs on LPUs (Lightning Processing Units).
@@ -113,9 +118,10 @@ NEVER use HTML tags (like <b> or <br>). Never paste a raw https:// URL. Use STRI
       query: query
     });
 
-  } catch (error: any) {
+  } catch (error) {
     // Critical infrastructure failure (Database down, etc.)
     console.error("Critical Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Unexpected error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

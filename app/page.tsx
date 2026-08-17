@@ -25,38 +25,35 @@ export default function Home() {
       {/* ================================================================
           Hero
           ================================================================ */}
-      <section className="relative flex min-h-[620px] items-start overflow-hidden bg-navy md:h-[740px]">
+      {/* The video is the point of this band, so the copy sits centred over an
+          even scrim rather than pinned left behind a heavy one-sided gradient.
+          The footage stays readable right across the frame. */}
+      <section className="relative flex min-h-[600px] items-center overflow-hidden bg-navy md:h-[780px]">
         <HeroVideo poster="/media/campus-poster.jpg" src="/media/campus.mp4" />
 
-        {/* Scrim: keeps the headline legible over any frame of the timelapse */}
+        {/* Even top-to-bottom scrim, darkest where the type sits. */}
         <div
-          className="absolute inset-0 bg-[linear-gradient(100deg,rgba(7,27,51,0.95)_0%,rgba(7,27,51,0.86)_40%,rgba(9,38,74,0.6)_72%,rgba(9,38,74,0.34)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,27,51,0.78)_0%,rgba(7,27,51,0.55)_38%,rgba(7,27,51,0.62)_70%,rgba(7,27,51,0.88)_100%)]"
           aria-hidden="true"
         />
+        {/* Centred vignette to hold the edges down without dimming the middle. */}
         <div
-          className="absolute inset-0 bg-[radial-gradient(130%_100%_at_72%_40%,rgba(21,108,206,0.28)_0%,rgba(7,27,51,0)_66%)]"
+          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,rgba(7,27,51,0)_35%,rgba(7,27,51,0.6)_100%)]"
           aria-hidden="true"
         />
 
-        <div className="shell relative z-10 flex w-full flex-col gap-6 pb-20 pt-20 md:gap-[26px] md:pt-[104px]">
-          <span className="inline-flex w-fit items-center gap-2.5 rounded-full border border-white/25 bg-white/8 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-on-navy backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-salmon" aria-hidden="true" />
-            Official TMU chapter of BMES
-          </span>
-
-          {/* No forced break: text-balance evens the lines out at whatever width
-              the viewport gives it. */}
-          <h1 className="t-hero max-w-[900px] text-balance text-white">
+        <div className="shell relative z-10 flex w-full flex-col items-center gap-6 py-24 text-center md:gap-7">
+          <h1 className="t-hero text-white">
             Where academia meets <span className="text-salmon">industry</span>.
           </h1>
 
-          <p className="t-lead max-w-[620px] text-on-navy">
+          <p className="t-lead max-w-[68ch] text-on-navy">
             As the Biomedical Engineering Society, we aim to provide a collaborative platform for
             students to connect, grow, develop their skills, and explore their passion in
             biomedical engineering both academically and professionally.
           </p>
 
-          <div className="mt-2 flex flex-wrap items-center gap-3.5">
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-3.5">
             <Link href="/about" className="btn btn-white">
               About BMES
             </Link>
@@ -71,36 +68,34 @@ export default function Home() {
           Quick links
           Deliberately quiet at rest so it never competes with the hero.
           ================================================================ */}
-      <section aria-label="Quick links" className="border-b border-hairline bg-surface-2">
-        <div className="mx-auto w-full max-w-[var(--shell-max)]">
-          <ul className="grid gap-px bg-hairline sm:grid-cols-2 lg:grid-cols-4">
-            {QUICK_LINKS.map((link) => (
-              <li key={link.label}>
-                <a
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex h-full items-center justify-between gap-4 bg-surface-2 px-6 py-6 transition-[background-color,box-shadow] duration-150 hover:bg-white hover:shadow-[inset_0_-3px_0_var(--color-brand)] md:px-8"
+      <section aria-label="Quick links" className="border-b border-hairline">
+        <ul className="quick-links">
+          {QUICK_LINKS.map((link) => (
+            <li key={link.label}>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex h-full items-center justify-between gap-4 bg-surface-2 py-6 transition-[background-color,box-shadow] duration-150 hover:bg-white hover:shadow-[inset_0_-3px_0_var(--color-brand)]"
+              >
+                <span className="flex flex-col gap-1">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">
+                    {link.kicker}
+                  </span>
+                  <span className="font-display text-lg font-semibold tracking-[-0.015em] text-[#2b3a52]">
+                    {link.label}
+                  </span>
+                </span>
+                <span
+                  className="text-base text-[#b3c0d1] transition-colors group-hover:text-brand"
+                  aria-hidden="true"
                 >
-                  <span className="flex flex-col gap-1">
-                    <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">
-                      {link.kicker}
-                    </span>
-                    <span className="font-display text-lg font-semibold tracking-[-0.015em] text-[#2b3a52]">
-                      {link.label}
-                    </span>
-                  </span>
-                  <span
-                    className="text-base text-[#b3c0d1] transition-colors group-hover:text-brand"
-                    aria-hidden="true"
-                  >
-                    ↗
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+                  ↗
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* ================================================================

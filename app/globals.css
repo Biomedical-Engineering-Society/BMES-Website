@@ -143,13 +143,15 @@ body {
      Type scale
      ------------------------------------------------------------------ */
 
+  /* Sized so "Where academia meets industry." sits on one line from roughly
+     720px up, and balances onto two below that. */
   .t-hero {
     font-family: var(--font-outfit), system-ui, sans-serif;
-    font-size: clamp(2.75rem, 6.1vw, 5.25rem);
+    font-size: clamp(2.5rem, 5.5vw, 4.75rem);
     font-weight: 700;
-    line-height: 0.99;
+    line-height: 1.02;
     letter-spacing: -0.035em;
-    text-wrap: pretty;
+    text-wrap: balance;
   }
 
   .t-page {
@@ -346,6 +348,65 @@ body {
   .link-underline:hover {
     color: var(--color-crimson);
     border-color: var(--color-crimson);
+  }
+
+  /* ------------------------------------------------------------------
+     Quick links band
+
+     Runs edge to edge so there is no dead strip beside the first and last
+     cards on a monitor wider than the content. The outer cards absorb that
+     leftover width and pad their contents back to where the shell would have
+     put them, so the row still lines up at the design width while every pixel
+     of the band belongs to a card and lights up on hover.
+     ------------------------------------------------------------------ */
+
+  .quick-links {
+    --edge: max(0px, calc((100% - var(--shell-max)) / 2));
+    --col: calc((100% - 3px - 2 * var(--edge)) / 4);
+    display: grid;
+    gap: 1px;
+    background: var(--color-hairline);
+    grid-template-columns: 1fr;
+  }
+
+  /* Horizontal padding lives here rather than as a utility on the anchor:
+     Tailwind's utilities layer wins over components, so a px-* class would
+     silently override the edge padding below. */
+  .quick-links > li > a {
+    padding-inline: 24px;
+  }
+
+  @media (min-width: 640px) {
+    .quick-links {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .quick-links > li > a {
+      padding-inline: 32px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .quick-links {
+      grid-template-columns:
+        calc(var(--col) + var(--edge))
+        var(--col)
+        var(--col)
+        calc(var(--col) + var(--edge));
+    }
+
+    /* --edge cannot be reused here: a percentage inside a custom property is
+       resolved against whichever element consumes it, so on the anchor `100%`
+       would mean the anchor's own width. Measure against the viewport instead. */
+    .quick-links > li:first-child > a {
+      padding-inline-start: max(32px, calc((100vw - var(--shell-max)) / 2 + 32px));
+    }
+
+    .quick-links > li:last-child > a {
+      padding-inline-end: max(32px, calc((100vw - var(--shell-max)) / 2 + 32px));
+    }
   }
 
   /* ------------------------------------------------------------------

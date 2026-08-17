@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import TeamCard from "../components/TeamCard";
-import { TEAM, TEAM_SIZE, TEAM_YEAR } from "@/lib/team";
+import { TEAM, TEAM_YEAR } from "@/lib/team";
 
 export const metadata: Metadata = {
   title: "Team",
@@ -17,43 +17,44 @@ export default function TeamPage() {
           Header
           ================================================================ */}
       <section className="relative overflow-hidden bg-navy text-white">
+        {/* Lighter than the other photo heroes: the point of this one is the
+            people in it, so the image carries more of the frame and the scrim
+            only does as much as the type needs. */}
         <Image
           src="/media/Group_photo.jpg"
           alt=""
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-40"
+          className="object-cover opacity-70"
         />
         <div
-          className="absolute inset-0 bg-[linear-gradient(100deg,rgba(7,27,51,0.94)_0%,rgba(7,27,51,0.8)_45%,rgba(9,38,74,0.58)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(100deg,rgba(7,27,51,0.9)_0%,rgba(7,27,51,0.66)_48%,rgba(7,27,51,0.32)_100%)]"
           aria-hidden="true"
         />
 
-        <div className="shell relative z-10 flex flex-col gap-10 py-14 md:py-20">
-          <div className="flex max-w-[820px] flex-col gap-4">
+        {/* max-width goes on the inner block, never on .shell itself, or it
+            overrides the shell width and centres the column. */}
+        <div className="shell relative z-10 py-16 md:py-24">
+          <div className="flex max-w-[820px] flex-col items-start gap-4">
             <span className="eyebrow eyebrow-on-dark">Our team</span>
             <h1 className="t-page-sm">Meet the people behind it.</h1>
             <p className="t-lead max-w-[640px] text-on-navy">
               Connecting students across campus with a passion for biomedical engineering. Every
               workshop, panel and conference on this site is run by the people below.
             </p>
-          </div>
 
-          <dl className="flex flex-wrap gap-x-14 gap-y-6 border-t border-white/15 pt-8">
-            <div className="flex flex-col gap-1">
-              <dt className="t-num text-[30px] text-white md:text-[34px]">{TEAM_YEAR}</dt>
-              <dd className="text-sm text-on-navy">Academic year</dd>
-            </div>
-            <div className="flex flex-col gap-1">
-              <dt className="t-num text-[30px] text-white md:text-[34px]">{TEAM_SIZE}</dt>
-              <dd className="text-sm text-on-navy">Executives on the team</dd>
-            </div>
-            <div className="flex flex-col gap-1">
-              <dt className="t-num text-[30px] text-white md:text-[34px]">POD 377</dt>
-              <dd className="text-sm text-on-navy">Where to find us</dd>
-            </div>
-          </dl>
+            {/* Facts as quiet chips rather than a ruled stat row, which cut
+                across the photograph. */}
+            <ul className="mt-3 flex flex-wrap gap-2.5">
+              <li className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-[13px] font-semibold text-white backdrop-blur-sm">
+                {TEAM_YEAR} <span className="font-normal text-on-navy">academic year</span>
+              </li>
+              <li className="rounded-full border border-white/25 bg-white/10 px-4 py-2 text-[13px] font-semibold text-white backdrop-blur-sm">
+                POD 377 <span className="font-normal text-on-navy">Podium Building</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
 

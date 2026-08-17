@@ -1,93 +1,155 @@
-import ChatWidget from "../components/ChatWidget";
-import { EnvelopeIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
+import type { Metadata } from "next";
 import ContactForm from "../components/ContactForm";
+import {
+  InstagramIcon,
+  LinkedInIcon,
+  LinktreeIcon,
+  MailIcon,
+  PinIcon,
+} from "../components/BrandIcons";
+import { CONTACT, LINKS } from "@/lib/site";
 
-function Banner() {
-  return (
-    <div className="bg-[#2a296b] py-10 px-4 text-white text-center">
-      <h1 className="text-2xl font-bold">Get In Touch</h1>
-      <h2 className="mt-2">We would love to hear from you! Reach out with any questions or feedback.</h2>
-    </div>
-  );
-}
+export const metadata: Metadata = {
+  title: "Contact",
+  description:
+    "Reach the Biomedical Engineering Society at Toronto Metropolitan University. Find us in POD 377 in the Podium Building, or send us a message.",
+};
 
-function ContactInfo() {
-  return (
-    <div className="w-full flex flex-col space-y-4">
-      <h2 className="text-xl font-semibold">Contact Information</h2>
-      <div className="flex items-center space-x-4 border border-gray-300 p-4 rounded-xl">
-        <EnvelopeIcon className="size-7.25 text-[#2a296b]" />
-        <div>
-          <h3 className="font-semibold text-lg">Email Us</h3>
-          <div>
-            <p>General Inquiries: bmes@torontomu.ca</p>
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center space-x-4 border border-gray-300 p-4 rounded-xl">
-        <Image src="/icons/Instagram_Glyph_Gradient.png" alt="Instagram Logo" width={29} height={29} />
-        <div>
-          <h3 className="font-semibold text-lg">Instagram</h3>
-          <div>
-            <p><a href="https://www.instagram.com/bmes.tmu/" target="_blank" rel="noopener noreferrer">@bmes.tmu</a></p>
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center space-x-4 border border-gray-300 p-4 rounded-xl">
-        <Image src="/icons/LI-In-Bug.png" alt="LinkedIn Logo" width={29} height={29} />
-        <div>
-          <h3 className="font-semibold text-lg">LinkedIn</h3>
-          <div>
-            <p><a href="https://www.linkedin.com/company/bmes-tmu/" target="_blank" rel="noopener noreferrer">BMES TMU Chapter</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Location() {
-  return (
-    <div className="p-4 flex flex-col sm:flex-row gap-10 justify-center items-center">
-      <div>
-        <h2 className="text-xl font-semibold">Visit Us</h2>
-        <p>Toronto Metropolitan University</p>
-        <p>350 Victoria Street</p>
-        <p>Toronto, ON M5B 2K3</p>
-      </div>
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2886.541015998281!2d-79.38181142382295!3d43.65771687110197!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d4cb35431c1395%3A0xe8ed8bd69125d6f4!2sToronto%20Metropolitan%20University!5e0!3m2!1sen!2sca!4v1769862199506!5m2!1sen!2sca"
-        width="70%"
-        height="300"
-        style={{ border: 0 }}
-        allowFullScreen={false}
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      ></iframe>
-    </div>
-  );
-}
+const CHANNELS = [
+  {
+    label: "Email us",
+    value: CONTACT.email,
+    href: LINKS.email,
+    Icon: MailIcon,
+    external: false,
+  },
+  {
+    label: "Instagram",
+    value: LINKS.instagramHandle,
+    href: LINKS.instagram,
+    Icon: InstagramIcon,
+    external: true,
+  },
+  {
+    label: "LinkedIn",
+    value: "BMES TMU Chapter",
+    href: LINKS.linkedin,
+    Icon: LinkedInIcon,
+    external: true,
+  },
+  {
+    label: "Linktree",
+    value: "Every link in one place",
+    href: LINKS.linktree,
+    Icon: LinktreeIcon,
+    external: true,
+  },
+];
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-white text-black">
-      {/* INSTRUCTIONS FOR HARIS */}
-      {/* HARIS: Create a Contact Form here.
-        1. Fields: Name, Email, Subject, Message.
-        2. Add our contact info (Email: bmes@torontomu.ca, Social links).
-        3. Embed a Google Map of TMU (optional).
-      */}
-
-      <Banner />
-      <div className="p-6 2xl:py-10 mx-auto w-5/6 2xl:w-300 flex flex-col space-y-6 2xl:space-y-10">
-        <div className="flex flex-col gap-6 md:flex-row md:gap-20">
-          <ContactForm />
-          <ContactInfo />
+    <>
+      {/* ================================================================
+          Header
+          ================================================================ */}
+      <section className="bg-navy text-white">
+        <div className="shell py-14 md:py-20">
+          <div className="flex max-w-[860px] flex-col gap-4">
+            <span className="eyebrow eyebrow-on-dark">Contact</span>
+            <h1 className="t-page-sm">Get in touch with BMES.</h1>
+            <p className="t-lead max-w-[620px] text-on-navy">
+              Questions about an event, a collaboration, or joining a committee. Send us a message
+              or drop by the office in the Podium Building.
+            </p>
+          </div>
         </div>
-        <Location />
-      </div>
-      <ChatWidget />
-    </div>
+      </section>
+
+      {/* ================================================================
+          Form and channels
+          ================================================================ */}
+      <section className="shell band grid gap-12 lg:grid-cols-[1fr_400px] lg:gap-20">
+        <div data-reveal="">
+          <ContactForm />
+        </div>
+
+        <div className="flex flex-col gap-5" data-reveal="">
+          <h2 className="t-band">Other ways to reach us</h2>
+
+          <ul className="flex flex-col gap-3">
+            {CHANNELS.map(({ label, value, href, Icon, external }) => (
+              <li key={label}>
+                <a
+                  href={href}
+                  target={external ? "_blank" : undefined}
+                  rel={external ? "noopener noreferrer" : undefined}
+                  className="card card-hover flex items-center gap-4 p-4.5"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-brand-tint-2 text-brand">
+                    <Icon size={20} />
+                  </span>
+                  <span className="flex flex-col gap-0.5">
+                    <span className="font-display text-[17px] font-semibold tracking-[-0.015em]">
+                      {label}
+                    </span>
+                    <span className="text-sm text-muted">{value}</span>
+                  </span>
+                  <span className="ml-auto text-[#b3c0d1]" aria-hidden="true">
+                    ↗
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div className="card flex items-start gap-4 p-4.5">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-brand-tint-2 text-brand">
+              <PinIcon size={20} />
+            </span>
+            <span className="flex flex-col gap-0.5">
+              <span className="font-display text-[17px] font-semibold tracking-[-0.015em]">
+                Find the office
+              </span>
+              <span className="text-sm text-muted">
+                {CONTACT.office}, {CONTACT.building}
+              </span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================
+          Visit us
+          ================================================================ */}
+      <section className="border-t border-hairline bg-surface">
+        <div className="shell band grid gap-10 lg:grid-cols-[380px_1fr] lg:items-center lg:gap-16">
+          <div className="flex flex-col gap-4" data-reveal="">
+            <span className="eyebrow">Visit us</span>
+            <h2 className="t-section-sm">Podium Building, room 377.</h2>
+            <address className="flex flex-col gap-1 text-[16px] not-italic leading-relaxed text-muted md:text-[17px]">
+              {CONTACT.addressLines.map((line) => (
+                <span key={line}>{line}</span>
+              ))}
+            </address>
+            <a href={LINKS.email} className="link-underline">
+              {CONTACT.email} →
+            </a>
+          </div>
+
+          <div
+            className="overflow-hidden rounded-[18px] border border-hairline bg-white"
+            data-reveal=""
+          >
+            <iframe
+              title="Map showing Toronto Metropolitan University"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2886.541015998281!2d-79.38181142382295!3d43.65771687110197!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d4cb35431c1395%3A0xe8ed8bd69125d6f4!2sToronto%20Metropolitan%20University!5e0!3m2!1sen!2sca!4v1769862199506!5m2!1sen!2sca"
+              className="block h-[320px] w-full border-0 md:h-[420px]"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { CONTACT } from "@/lib/site";
 
 type ContactFormData = {
   name: string;
@@ -9,164 +11,164 @@ type ContactFormData = {
   message: string;
 };
 
+type Status = { kind: "idle" } | { kind: "sent" } | { kind: "error"; message: string };
+
+const FIELD_BASE =
+  "w-full rounded-[10px] border bg-white px-4 py-3 text-[15px] text-ink transition-colors placeholder:text-muted focus:border-brand focus:outline-none";
+
 export default function ContactForm() {
+  const [status, setStatus] = useState<Status>({ kind: "idle" });
+
   const {
     register,
     handleSubmit,
-    formState: { errors, touchedFields, isSubmitting, dirtyFields },
+    formState: { errors, isSubmitting, dirtyFields },
     reset,
-
   } = useForm<ContactFormData>({
-    mode: "onChange",
-    defaultValues: {
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    },
+    mode: "onBlur",
+    defaultValues: { name: "", email: "", subject: "", message: "" },
   });
 
   const onSubmit = async (data: ContactFormData) => {
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    setStatus({ kind: "idle" });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const body = await res.json().catch(() => ({}));
 
-    if (res.ok) {
-      reset();
+      if (res.ok && body.success) {
+        reset();
+        setStatus({ kind: "sent" });
+      } else {
+        setStatus({
+          kind: "error",
+          message:
+            body.error || `We could not send that. Please email ${CONTACT.email} instead.`,
+        });
+      }
+    } catch {
+      setStatus({
+        kind: "error",
+        message: `We could not reach the server. Please email ${CONTACT.email} instead.`,
+      });
     }
   };
 
-  const inputStyle = (field: keyof ContactFormData) => {
-    if (field === "subject" && touchedFields[field]) {
-      return "border-green-500 focus:ring-green-500";
-    }
-
-    if (dirtyFields[field]) {
-      return errors[field]
-        ? "border-red-500 focus:ring-red-500"
-        : "border-green-500 focus:ring-green-500";
-    }
-
-    return "border-gray-300";
-  };
-
-  const icon = (field: keyof ContactFormData) => {
-    if (field === "subject" && touchedFields[field]) {
-      return <span className="text-green-600 ml-2">✔</span>;
-    }
-
-    if (dirtyFields[field]) {
-      return errors[field]
-        ? <span className="text-red-600 ml-2">✖</span>
-        : <span className="text-green-600 ml-2">✔</span>
-    }
-
-    return null;
+  const borderFor = (field: keyof ContactFormData) => {
+    if (errors[field]) return "border-crimson";
+    if (dirtyFields[field]) return "border-brand-border";
+    return "border-hairline-strong";
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="w-full space-y-4"
-      noValidate
-    >
-      <h2 className="text-xl font-semibold">Send Us a Message</h2>
-      <h3 className="text-xs text-gray-600">Required fields are marked with <span className="text-red-600">*</span></h3>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col gap-5" noValidate>
+      <div className="flex flex-col gap-2">
+        <h2 className="t-band">Send us a message</h2>
+        <p className="text-[15px] text-muted">
+          Fields marked with an asterisk are required. We usually reply within a few days.
+        </p>
+      </div>
 
-      {/* Name */}
-      <div>
-        <label className="block mb-1">
-          Name <span className="text-red-600">*</span>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="contact-name" className="text-sm font-semibold text-navlink">
+          Name <span className="text-crimson">*</span>
         </label>
-        <div className="flex items-center">
-          <input
-            className={`w-[calc(100%-21px)] rounded-md border p-2 ${inputStyle("name")}`}
-            {...register("name", {
-              required: "Name is required.",
-              minLength: {
-                value: 2,
-                message: "Must be at least 2 characters.",
-              },
-            })}
-          />
-          {icon("name")}
-        </div>
+        <input
+          id="contact-name"
+          autoComplete="name"
+          aria-invalid={Boolean(errors.name)}
+          aria-describedby={errors.name ? "contact-name-error" : undefined}
+          className={`${FIELD_BASE} ${borderFor("name")}`}
+          {...register("name", {
+            required: "Please tell us your name.",
+            minLength: { value: 2, message: "That looks a little short." },
+          })}
+        />
         {errors.name && (
-          <p className="text-red-600 text-sm mt-1">✖ {errors.name.message}</p>
-        )}
-      </div>
-
-      {/* Email */}
-      <div>
-        <label className="block mb-1">
-          Email <span className="text-red-600">*</span>
-        </label>
-        <div className="flex items-center">
-          <input
-            type="email"
-            className={`w-[calc(100%-21px)] rounded-md border p-2 ${inputStyle("email")}`}
-            {...register("email", {
-              required: "Email is required.",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Enter a valid email address.",
-              },
-            })}
-          />
-          {icon("email")}
-        </div>
-        {errors.email && (
-          <p className="text-red-600 text-sm mt-1">✖ {errors.email.message}</p>
-        )}
-      </div>
-
-      {/* Subject */}
-      <div>
-        <label className={`block mb-1`}>Subject</label>
-        <div className="flex items-center">
-          <input
-            className={`w-[calc(100%-21px)] rounded-md border p-2 ${inputStyle("subject")}`}
-            {...register("subject")}
-          />
-          {icon("subject")}
-        </div>
-      </div>
-
-      {/* Message */}
-      <div>
-        <label className="block mb-1">
-          Message <span className="text-red-600">*</span>
-        </label>
-        <div className="flex items-start">
-          <textarea
-            rows={5}
-            className={`w-[calc(100%-21px)] rounded-md border p-2 ${inputStyle("message")}`}
-            {...register("message", {
-              required: "Message is required.",
-              minLength: {
-                value: 10,
-                message: "Must be at least 10 characters.",
-              },
-            })}
-          />
-          {icon("message")}
-        </div>
-        {errors.message && (
-          <p className="text-red-600 text-sm mt-1">
-            ✖ {errors.message.message}
+          <p id="contact-name-error" role="alert" className="text-[13px] font-medium text-crimson">
+            {errors.name.message}
           </p>
         )}
       </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-[#2a296b] text-white px-4 py-2 hover:cursor-pointer hover:bg-[#1f1a4d] rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isSubmitting ? "Sending..." : "Send Message"}
-      </button>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="contact-email" className="text-sm font-semibold text-navlink">
+          Email <span className="text-crimson">*</span>
+        </label>
+        <input
+          id="contact-email"
+          type="email"
+          autoComplete="email"
+          aria-invalid={Boolean(errors.email)}
+          aria-describedby={errors.email ? "contact-email-error" : undefined}
+          className={`${FIELD_BASE} ${borderFor("email")}`}
+          {...register("email", {
+            required: "We need an email to reply to.",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Enter a valid email address.",
+            },
+          })}
+        />
+        {errors.email && (
+          <p id="contact-email-error" role="alert" className="text-[13px] font-medium text-crimson">
+            {errors.email.message}
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="contact-subject" className="text-sm font-semibold text-navlink">
+          Subject
+        </label>
+        <input
+          id="contact-subject"
+          className={`${FIELD_BASE} ${borderFor("subject")}`}
+          {...register("subject")}
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="contact-message" className="text-sm font-semibold text-navlink">
+          Message <span className="text-crimson">*</span>
+        </label>
+        <textarea
+          id="contact-message"
+          rows={6}
+          aria-invalid={Boolean(errors.message)}
+          aria-describedby={errors.message ? "contact-message-error" : undefined}
+          className={`${FIELD_BASE} resize-y ${borderFor("message")}`}
+          {...register("message", {
+            required: "Let us know what you would like to ask.",
+            minLength: { value: 10, message: "A little more detail would help." },
+          })}
+        />
+        {errors.message && (
+          <p
+            id="contact-message-error"
+            role="alert"
+            className="text-[13px] font-medium text-crimson"
+          >
+            {errors.message.message}
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-4">
+        <button type="submit" disabled={isSubmitting} className="btn btn-primary disabled:opacity-60">
+          {isSubmitting ? "Sending..." : "Send message"}
+        </button>
+
+        <p aria-live="polite" className="text-[14px] font-semibold">
+          {status.kind === "sent" && (
+            <span className="text-brand">Thanks, your message is on its way.</span>
+          )}
+          {status.kind === "error" && <span className="text-crimson">{status.message}</span>}
+        </p>
+      </div>
     </form>
   );
 }

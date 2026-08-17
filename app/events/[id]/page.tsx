@@ -1,122 +1,184 @@
-"use client";
-
-import { useParams, useRouter } from "next/navigation";
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import eventsDataRaw from "../../../data/events.json";
+import { notFound } from "next/navigation";
+import {
+  ALL_EVENTS,
+  eventCoverImage,
+  formatLongDate,
+  isPastEvent,
+  todayISO,
+} from "@/lib/events";
 
-const eventsData = eventsDataRaw as any[];
+type PageProps = { params: Promise<{ id: string }> };
 
-export default function EventDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const eventId = parseInt(params.id as string);
-  
-  const event = eventsData.find((e) => e.id === eventId);
+/** The Upcoming / Archive badge is date dependent, so refresh the page hourly. */
+export const revalidate = 3600;
 
-  if (!event) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 flex-col gap-4">
-        <h1 className="text-2xl font-bold text-gray-800">Event Not Found</h1>
-        <button onClick={() => router.back()} className="text-blue-600 hover:underline">
-          &larr; Go Back
-        </button>
-      </div>
-    );
-  }
+function findEvent(id: string) {
+  return ALL_EVENTS.find((event) => String(event.id) === id) ?? null;
+}
 
-  const displayDate = new Date(event.date.replace(/-/g, "/"));
-  const isPast = new Date(event.date) < new Date();
+export function generateStaticParams() {
+  return ALL_EVENTS.map((event) => ({ id: String(event.id) }));
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const event = findEvent(id);
+  if (!event) return { title: "Event not found" };
+
+  return {
+    title: event.title,
+    description: event.description,
+  };
+}
+
+export default async function EventDetailPage({ params }: PageProps) {
+  const { id } = await params;
+  const event = findEvent(id);
+  if (!event) notFound();
+
+  const today = todayISO();
+  const past = isPastEvent(event, today);
+  const hasLink = Boolean(event.link) && event.link !== "#";
+  const photos = event.images ?? [];
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Hero Header */}
-      <div className="bg-white border-b pt-12 pb-8 px-6 shadow-sm">
-        <div className="max-w-5xl mx-auto">
-          <button 
-            onClick={() => router.back()}
-            className="mb-8 flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition"
+    <>
+      {/* ================================================================
+          Header
+          ================================================================ */}
+      <section className="relative overflow-hidden bg-navy text-white">
+        <Image
+          src={eventCoverImage(event)}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-45"
+        />
+        <div
+          className="absolute inset-0 bg-[linear-gradient(100deg,rgba(7,27,51,0.95)_0%,rgba(7,27,51,0.82)_45%,rgba(9,38,74,0.62)_100%)]"
+          aria-hidden="true"
+        />
+
+        <div className="shell relative z-10 py-14 md:py-20">
+          <Link
+            href="/events"
+            className="mb-8 inline-flex items-center gap-2.5 text-sm font-semibold text-on-navy transition-colors hover:text-white"
           >
-            &larr; Back to Events
-          </button>
-          
-          <div className="flex flex-col md:flex-row justify-between items-start gap-6">
-            <div>
-              <span className="text-sm font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full inline-block mb-4">
-                {event.category}
+            <span aria-hidden="true">←</span> Back to events
+          </Link>
+
+          <div className="grid gap-10 lg:grid-cols-[1fr_320px] lg:items-start lg:gap-16">
+            <div className="flex flex-col gap-5">
+              <span className="inline-flex self-start rounded-full bg-crimson px-4 py-2 text-[11px] font-bold uppercase tracking-[0.12em] md:text-xs">
+                {past ? "Archive" : "Upcoming"} · {event.category}
               </span>
-              <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-4">
-                {event.title}
-              </h1>
-              <p className="text-xl text-gray-600 max-w-2xl">
+              <h1 className="t-page-sm">{event.title}</h1>
+              <p className="max-w-[640px] text-[17px] leading-[1.6] text-on-navy text-pretty md:text-[19px]">
                 {event.description}
               </p>
             </div>
-            
-            <div className="bg-gray-50 p-6 rounded-xl border min-w-[280px] shrink-0">
-              <div className="space-y-4 text-gray-700">
-                <div>
-                  <p className="text-sm text-gray-500 font-medium uppercase tracking-wider mb-1">Date & Time</p>
-                  <p className="font-semibold text-gray-900">
-                    {displayDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
-                  </p>
-                  <p>{event.time}</p>
+
+            <div className="rounded-[18px] border border-white/15 bg-white/8 p-6 backdrop-blur-sm md:p-7">
+              <dl className="flex flex-col gap-4 text-[15px]">
+                <div className="flex flex-col gap-1">
+                  <dt className="text-[11px] font-bold uppercase tracking-[0.14em] text-on-navy-muted">
+                    Date and time
+                  </dt>
+                  <dd className="font-semibold">{formatLongDate(event.date)}</dd>
+                  <dd className="text-on-navy">{event.time}</dd>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500 font-medium uppercase tracking-wider mb-1">Location</p>
-                  <p className="font-semibold text-gray-900">{event.location}</p>
+                <div className="flex flex-col gap-1">
+                  <dt className="text-[11px] font-bold uppercase tracking-[0.14em] text-on-navy-muted">
+                    Location
+                  </dt>
+                  <dd className="font-semibold">{event.location}</dd>
                 </div>
-              </div>
-              
-              {event.link && event.link !== "#" && (
-                <div className="mt-6 pt-6 border-t">
+              </dl>
+
+              <div className="mt-6 border-t border-white/15 pt-6">
+                {hasLink ? (
                   <a
                     href={event.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`block w-full text-center px-6 py-3 rounded-lg font-medium shadow-sm transition ${isPast ? "bg-gray-200 text-gray-800 hover:bg-gray-300" : "bg-blue-600 text-white hover:bg-blue-700"}`}
+                    className="btn btn-white w-full"
                   >
-                    {isPast ? "View Details" : "Get Tickets"}
+                    {past ? "View details →" : "Registration details →"}
                   </a>
-                </div>
-              )}
+                ) : (
+                  <Link href="/contact" className="btn btn-white w-full">
+                    Ask us about this →
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Media Archive (Main Content) */}
-      {isPast && (
-        <div className="max-w-5xl mx-auto px-6 mt-12 animate-in fade-in duration-500 delay-100 fill-mode-both">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">Event Archive</h2>
-            <p className="text-gray-600">Photos and memories from {event.title}.</p>
-          </div>
-
-          {event.images && event.images.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {event.images.map((img: string, idx: number) => (
-                <div key={idx} className="group overflow-hidden rounded-xl border bg-white shadow-sm hover:shadow-lg transition-all">
-                  <div className="aspect-[4/3] w-full relative">
-                    <img 
-                      src={img} 
-                      alt={`Event photo ${idx + 1}`} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-white border rounded-xl p-12 text-center shadow-sm">
-              <div className="text-4xl mb-4">📸</div>
-              <h3 className="text-xl font-medium text-gray-900 mb-2">No photos yet</h3>
-              <p className="text-gray-500 max-w-sm mx-auto">
-                We're still gathering photos for this event. Check back soon or upload them to the repository!
-              </p>
-            </div>
-          )}
+      {/* ================================================================
+          Archive gallery
+          ================================================================ */}
+      <section className="shell band">
+        <div className="mb-8 flex flex-col gap-4">
+          <span className="eyebrow">{past ? "Event archive" : "Preview"}</span>
+          <h2 className="t-section-sm">
+            {past ? "Moments from the day." : "What it usually looks like."}
+          </h2>
         </div>
-      )}
-    </div>
+
+        {photos.length > 0 ? (
+          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {photos.map((photo, index) => (
+              <li
+                key={photo}
+                className="card card-hover group relative aspect-[4/3] overflow-hidden"
+                data-reveal=""
+              >
+                <Image
+                  src={photo}
+                  alt={`${event.title}, photo ${index + 1}`}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="card flex flex-col items-center gap-3 px-6 py-16 text-center">
+            <h3 className="t-card">No photos yet</h3>
+            <p className="max-w-sm text-[15px] leading-relaxed text-muted">
+              We are still gathering photos for this event. Check back soon, or send yours to{" "}
+              <a href="mailto:bmes@torontomu.ca" className="font-semibold text-brand hover:underline">
+                bmes@torontomu.ca
+              </a>
+              .
+            </p>
+          </div>
+        )}
+      </section>
+
+      {/* ================================================================
+          Next step
+          ================================================================ */}
+      <section className="border-t border-hairline bg-surface">
+        <div className="shell band-sm flex flex-col items-start justify-between gap-8 md:flex-row md:items-center md:gap-12">
+          <div className="flex flex-col gap-3">
+            <h2 className="t-band">See what else is coming up.</h2>
+            <p className="max-w-[600px] text-[16px] leading-[1.6] text-muted md:text-[17px]">
+              Workshops, panels and conferences run right across the academic year.
+            </p>
+          </div>
+          <Link href="/events" className="btn btn-primary">
+            All events →
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }

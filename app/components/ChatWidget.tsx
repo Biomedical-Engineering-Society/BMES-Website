@@ -1,6 +1,7 @@
 "use client";
 
-import ReactMarkdown from "react-markdown";
+import Link from "next/link";
+import ReactMarkdown, { type Components } from "react-markdown";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChatIcon, CloseIcon, SendIcon } from "./BrandIcons";
 import { ASSISTANT_NAME, CONTACT } from "@/lib/site";
@@ -11,10 +12,29 @@ type Message = {
 };
 
 const SUGGESTED_PROMPTS = [
-  "When is the next event?",
+  "What events do you run?",
   "Where do I find past exams?",
-  "How do I join the exec team?",
+  "Who is on the exec team?",
 ];
+
+/**
+ * The assistant links to pages of this site. Route those through next/link so
+ * they navigate client side and keep the page transition, and send anything
+ * external to a new tab so the conversation is not lost.
+ */
+const markdownComponents: Components = {
+  a({ href, children }) {
+    const target = href ?? "";
+    if (target.startsWith("/")) {
+      return <Link href={target}>{children}</Link>;
+    }
+    return (
+      <a href={target} target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    );
+  },
+};
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -160,7 +180,7 @@ export default function ChatWidget() {
                 >
                   {msg.role === "ai" ? (
                     <div className="chat-md">
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      <ReactMarkdown components={markdownComponents}>{msg.content}</ReactMarkdown>
                     </div>
                   ) : (
                     msg.content
@@ -219,19 +239,19 @@ export default function ChatWidget() {
         </div>
       )}
 
-      {/* A plain circular launcher. The echo ring behind it reads as a quiet
-          notification; it stops once the visitor has opened the chat, so it
-          never nags someone who already knows it is there. */}
+      {/* A plain circular launcher in a softened red drawn from the logo's ECG
+          line. The echo ring settles the moment the visitor opens the chat, so
+          it never nags someone who already found it. */}
       <div className="relative">
         {!isOpen && !hasOpened && (
           <>
             <span
               aria-hidden="true"
-              className="absolute inset-0 rounded-full bg-brand/40 [animation:chatEcho_2.8s_cubic-bezier(0,0,0.2,1)_infinite]"
+              className="absolute inset-0 rounded-full bg-pulse/35 [animation:chatEcho_2.8s_cubic-bezier(0,0,0.2,1)_infinite]"
             />
             <span
               aria-hidden="true"
-              className="absolute inset-0 rounded-full bg-brand/30 [animation:chatEcho_2.8s_cubic-bezier(0,0,0.2,1)_infinite_700ms]"
+              className="absolute inset-0 rounded-full bg-pulse/25 [animation:chatEcho_2.8s_cubic-bezier(0,0,0.2,1)_infinite_700ms]"
             />
           </>
         )}
@@ -245,7 +265,7 @@ export default function ChatWidget() {
           }}
           aria-expanded={isOpen}
           aria-label={isOpen ? "Close chat" : `Ask ${ASSISTANT_NAME}, the BMES student assistant`}
-          className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-[0_18px_36px_-18px_rgba(21,108,206,0.9)] transition-[background-color,transform] duration-200 hover:bg-brand-hover active:scale-95"
+          className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-pulse text-white shadow-[0_14px_30px_-16px_rgba(169,1,35,0.7)] transition-[background-color,transform] duration-200 hover:bg-crimson active:scale-95"
         >
           {isOpen ? <CloseIcon size={22} /> : <ChatIcon size={24} />}
 

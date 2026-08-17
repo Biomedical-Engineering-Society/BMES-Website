@@ -43,10 +43,15 @@ export default function Navbar() {
 
   const contactActive = isActive(pathname, "/contact");
 
+  // Solid at rest, then glass once the page moves under it: content scrolling
+  // past stays faintly visible through the header instead of disappearing
+  // behind an opaque bar.
   return (
     <header
-      className={`sticky top-0 z-50 border-b border-hairline bg-white/94 backdrop-blur-xl transition-shadow duration-200 ${
-        scrolled ? "shadow-[0_10px_30px_-26px_rgba(7,27,51,0.55)]" : ""
+      className={`sticky top-0 z-50 border-b transition-[background-color,box-shadow,border-color] duration-300 ${
+        scrolled
+          ? "border-hairline/70 bg-white/72 shadow-[0_10px_30px_-24px_rgba(7,27,51,0.45)] backdrop-blur-2xl backdrop-saturate-150"
+          : "border-hairline bg-white"
       }`}
     >
       <div className="shell-nav flex items-center justify-between gap-6 py-2.5 md:py-3.5">

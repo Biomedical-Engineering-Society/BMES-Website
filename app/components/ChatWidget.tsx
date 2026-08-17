@@ -18,6 +18,8 @@ const SUGGESTED_PROMPTS = [
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  /** Silences the launcher's attention ring once the visitor has engaged once. */
+  const [hasOpened, setHasOpened] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -217,17 +219,42 @@ export default function ChatWidget() {
         </div>
       )}
 
-      <button
-        ref={launcherRef}
-        type="button"
-        onClick={() => setIsOpen((open) => !open)}
-        aria-expanded={isOpen}
-        aria-label={isOpen ? "Close chat" : `Ask ${ASSISTANT_NAME}, the BMES student assistant`}
-        className="inline-flex items-center gap-3 rounded-full bg-brand px-5 py-4 text-[15px] font-bold text-white shadow-[0_18px_36px_-18px_rgba(21,108,206,0.9)] transition-colors hover:bg-brand-hover md:px-6"
-      >
-        {isOpen ? <CloseIcon size={20} /> : <ChatIcon />}
-        <span className="hidden sm:inline">Ask {ASSISTANT_NAME}</span>
-      </button>
+      {/* A plain circular launcher. The echo ring behind it reads as a quiet
+          notification; it stops once the visitor has opened the chat, so it
+          never nags someone who already knows it is there. */}
+      <div className="relative">
+        {!isOpen && !hasOpened && (
+          <>
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full bg-brand/40 [animation:chatEcho_2.8s_cubic-bezier(0,0,0.2,1)_infinite]"
+            />
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full bg-brand/30 [animation:chatEcho_2.8s_cubic-bezier(0,0,0.2,1)_infinite_700ms]"
+            />
+          </>
+        )}
+
+        <button
+          ref={launcherRef}
+          type="button"
+          onClick={() => {
+            setHasOpened(true);
+            setIsOpen((open) => !open);
+          }}
+          aria-expanded={isOpen}
+          aria-label={isOpen ? "Close chat" : `Ask ${ASSISTANT_NAME}, the BMES student assistant`}
+          className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-brand text-white shadow-[0_18px_36px_-18px_rgba(21,108,206,0.9)] transition-[background-color,transform] duration-200 hover:bg-brand-hover active:scale-95"
+        >
+          {isOpen ? <CloseIcon size={22} /> : <ChatIcon size={24} />}
+
+          {/* Name on hover, so the button stays a button. */}
+          <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-lg bg-navy px-3 py-2 text-[13px] font-bold text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 max-md:hidden">
+            Ask {ASSISTANT_NAME}
+          </span>
+        </button>
+      </div>
     </div>
   );
 }

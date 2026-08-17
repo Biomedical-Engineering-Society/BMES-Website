@@ -44,10 +44,10 @@ export default function Home() {
             Official TMU chapter of BMES
           </span>
 
-          <h1 className="t-hero max-w-[830px] text-white">
-            Where academia
-            <br />
-            meets <span className="text-salmon">industry</span>.
+          {/* No forced break: text-balance evens the lines out at whatever width
+              the viewport gives it. */}
+          <h1 className="t-hero max-w-[900px] text-balance text-white">
+            Where academia meets <span className="text-salmon">industry</span>.
           </h1>
 
           <p className="t-lead max-w-[620px] text-on-navy">
@@ -71,8 +71,8 @@ export default function Home() {
           Quick links
           Deliberately quiet at rest so it never competes with the hero.
           ================================================================ */}
-      <section aria-label="Quick links" className="border-b border-hairline bg-hairline">
-        <div className="mx-auto w-full max-w-[1440px]">
+      <section aria-label="Quick links" className="border-b border-hairline bg-surface-2">
+        <div className="mx-auto w-full max-w-[var(--shell-max)]">
           <ul className="grid gap-px bg-hairline sm:grid-cols-2 lg:grid-cols-4">
             {QUICK_LINKS.map((link) => (
               <li key={link.label}>

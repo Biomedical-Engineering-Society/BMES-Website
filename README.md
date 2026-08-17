@@ -58,7 +58,9 @@ body and UI. Use the type classes rather than raw sizes:
 
 ### Layout and components
 
-- `.shell` page container: max 1440px, gutter scales to 88px. `.shell-nav` uses the 48px nav gutter.
+- `.shell` page container: max `--shell-max` (1440px), gutter scales to 88px. `.shell-nav` uses the
+  48px nav gutter. Full-bleed bands should carry the same background as their contents so nothing
+  shows past the content edge on a wide monitor.
   **Never put a Tailwind `max-w-*` on the same element as `.shell`**, it overrides the shell width and
   silently centres the block. Put the max width on an inner element instead.
 - `.band` / `.band-sm` vertical section rhythm.
@@ -84,7 +86,7 @@ body and UI. Use the type classes rather than raw sizes:
 | Links and contact   | `lib/site.ts`                                                              |
 | Brand assets        | `public/brand/`, hero video at `public/media/campus.mp4`                    |
 
-### Page ownership
+<!-- ### Page ownership
 
 | Page         | Owner      | Path                          |
 | ------------ | ---------- | ----------------------------- |
@@ -94,7 +96,7 @@ body and UI. Use the type classes rather than raw sizes:
 | Team         | Aydin      | `app/team/page.tsx`           |
 | Events / AI  | Samin      | `app/events/`, `app/components/ChatWidget.tsx` |
 
----
+--- -->
 
 ## Updating content without touching design code
 

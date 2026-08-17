@@ -406,7 +406,9 @@ export default function EventsBrowser({ serverToday }: { serverToday: string }) 
                   ))}
                 </div>
 
-                <div className="grid grid-cols-7 gap-2">
+                {/* Keyed on the month so the whole grid fades in on navigation
+                    rather than snapping to the new numbers. */}
+                <div key={`${cursor.year}-${cursor.month}`} className="grid grid-cols-7 gap-2 [animation:monthIn_300ms_ease-out]">
                   {calendar.map((cell, index) => {
                     if (!cell.day) {
                       return (
@@ -423,15 +425,17 @@ export default function EventsBrowser({ serverToday }: { serverToday: string }) 
                     return (
                       <div
                         key={cell.iso}
-                        className={`flex min-h-[122px] flex-col gap-1.5 rounded-[10px] border p-2 pb-2.5 ${
+                        className={`group/day flex min-h-[122px] flex-col gap-1.5 rounded-[10px] border p-2 pb-2.5 transition-[background-color,border-color,box-shadow] duration-150 ${
                           hasEvents
-                            ? "border-brand-border bg-brand-tint-2"
-                            : "border-hairline bg-white"
+                            ? "border-brand-border bg-brand-tint-2 hover:border-brand hover:shadow-[0_10px_26px_-18px_rgba(21,108,206,0.7)]"
+                            : "border-hairline bg-white hover:border-brand-border hover:bg-surface"
                         }`}
                       >
                         <span
-                          className={`text-[13px] font-bold ${
-                            hasEvents ? "text-brand" : "text-muted"
+                          className={`text-[13px] font-bold transition-colors ${
+                            hasEvents
+                              ? "text-brand"
+                              : "text-muted group-hover/day:text-ink"
                           } ${isToday ? "flex h-5 w-5 items-center justify-center rounded-full bg-crimson text-white" : ""}`}
                         >
                           {cell.day}
@@ -443,7 +447,7 @@ export default function EventsBrowser({ serverToday }: { serverToday: string }) 
                             type="button"
                             onClick={() => setSelected(event)}
                             title={event.title}
-                            className="block rounded-md bg-brand px-2 py-1.5 text-left text-[11px] font-bold leading-[1.25] text-white transition-colors hover:bg-brand-hover"
+                            className="block rounded-md bg-brand px-2 py-1.5 text-left text-[11px] font-bold leading-[1.25] text-white shadow-[0_2px_6px_-2px_rgba(21,108,206,0.8)] transition-[background-color,transform,box-shadow] duration-150 hover:bg-brand-hover hover:shadow-[0_6px_14px_-4px_rgba(21,108,206,0.9)] active:scale-[0.97]"
                           >
                             {event.title}
                           </button>
@@ -458,14 +462,7 @@ export default function EventsBrowser({ serverToday }: { serverToday: string }) 
             <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-hairline pt-5">
               <span className="flex items-center gap-2.5 text-[13px] font-semibold text-muted">
                 <span className="h-[15px] w-[15px] rounded bg-brand" aria-hidden="true" />
-                BMES event, click for details
-              </span>
-              <span className="flex items-center gap-2.5 text-[13px] font-semibold text-muted">
-                <span
-                  className="h-[15px] w-[15px] rounded border border-brand-border bg-brand-tint-2"
-                  aria-hidden="true"
-                />
-                Day with programming
+                Click an event for details
               </span>
               <span className="flex items-center gap-2.5 text-[13px] font-semibold text-muted">
                 <span className="h-[15px] w-[15px] rounded-full bg-crimson" aria-hidden="true" />

@@ -143,7 +143,7 @@ export default function ContactForm() {
           className={`${FIELD_BASE} resize-y ${borderFor("message")}`}
           {...register("message", {
             required: "Let us know what you would like to ask.",
-            minLength: { value: 10, message: "A little more detail would help." },
+            minLength: { value: 10, message: "Your message is too short." },
           })}
         />
         {errors.message && (

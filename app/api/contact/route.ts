@@ -8,11 +8,20 @@ import { Resend } from "resend";
  * Building the site must not depend on a mail key being configured.
  */
 
-const TO_ADDRESS = process.env.CONTACT_TO_EMAIL || "bmes@torontomu.ca";
+const TO_ADDRESS = process.env.CONTACT_TO_EMAIL || "bmes@mues.ca";
 const FROM_ADDRESS = process.env.CONTACT_FROM_EMAIL || "onboarding@resend.dev";
 
+// 1. Define the expected shape of the request body
+interface ContactFormPayload {
+  name: string;
+  email: string;
+  subject?: string;
+  message: string;
+}
+
 /** User input is interpolated into an HTML email, so it has to be escaped. */
-function escapeHtml(value) {
+// 2. Type the input parameter as a string, null, or undefined
+function escapeHtml(value: string | null | undefined): string {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -21,9 +30,12 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
-export async function POST(req) {
+// 3. Type the incoming request and the outgoing promise response
+export async function POST(req: Request): Promise<Response> {
   try {
-    const { name, email, subject, message } = await req.json();
+    // 4. Cast the parsed JSON to our interface (using Partial in case fields are missing)
+    const body = (await req.json()) as Partial<ContactFormPayload>;
+    const { name, email, subject, message } = body;
 
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
       return Response.json(
@@ -53,12 +65,12 @@ export async function POST(req) {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const { error } = await resend.emails.send({
-      from: FROM_ADDRESS,
+      from: `BMES Contact Form <${FROM_ADDRESS}>`,
       to: TO_ADDRESS,
       replyTo: email.trim(),
-      subject: subject?.trim() || `New website message from ${name.trim()}`,
+      subject: subject?.trim() || `New message from ${name.trim()}`,
       html: `
-        <h2>New contact form submission</h2>
+        <h2>New contact form submission.</h2>
         <p><strong>Name:</strong> ${escapeHtml(name)}</p>
         <p><strong>Email:</strong> ${escapeHtml(email)}</p>
         <p><strong>Subject:</strong> ${escapeHtml(subject) || "(none)"}</p>

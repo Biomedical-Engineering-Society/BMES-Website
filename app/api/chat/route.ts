@@ -1,10 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import Groq from "groq-sdk"; //INDUSTRY STANDARD: Specialized Inference Engine
 import { ASSISTANT_NAME, CONTACT, LINKS } from "@/lib/site";
 import { buildSiteContext } from "@/lib/siteContext";
+
+// Reads the knowledge base off disk, so it cannot run on the edge.
+export const runtime = "nodejs";
+
+/** How many retrieved chunks to put in front of the model. */
+const RETRIEVED_CHUNKS = 6;
+
+/**
+ * The chapter knowledge base, in full.
+ *
+ * Normally the assistant only sees the handful of chunks retrieval picked out.
+ * This is the safety net for when there is nothing to retrieve from: no vector
+ * store configured, or Supabase or Hugging Face erroring. It is a few thousand
+ * tokens, which is nothing next to the model's context window, so a fallback
+ * answer is still a grounded answer rather than an apology.
+ *
+ * `next.config.ts` keeps this file in the deployment bundle.
+ */
+const KNOWLEDGE_BASE = "data/source-docs/BMES-Knowledge-Base-v3.md";
+
+let knowledgeBase: string | null = null;
+
+function readKnowledgeBase(): string {
+  if (knowledgeBase === null) {
+    try {
+      knowledgeBase = fs.readFileSync(path.join(process.cwd(), KNOWLEDGE_BASE), "utf8");
+    } catch (error) {
+      console.error(`Could not read ${KNOWLEDGE_BASE}:`, error);
+      knowledgeBase = "";
+    }
+  }
+  return knowledgeBase;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,33 +51,51 @@ export async function POST(req: NextRequest) {
     // ---------------------------------------------------------
     // STEP 1: RETRIEVAL (The "R" in RAG)
     // ---------------------------------------------------------
-    const client = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_API!
+    // Retrieval is best effort. If the vector store is not configured, or is
+    // simply having a bad day, we fall back to the full knowledge base below
+    // rather than leaving the model with nothing to answer from. The only key
+    // the assistant genuinely cannot work without is GROQ_API_KEY.
+    const canRetrieve = Boolean(
+      process.env.SUPABASE_URL && process.env.SUPABASE_API && process.env.HUGGINGFACE_TOKEN
     );
 
-    // We keep Hugging Face for Embeddings because it is cheap, accurate, and reliable.
-    const embeddings = new HuggingFaceInferenceEmbeddings({
-      apiKey: process.env.HUGGINGFACE_TOKEN,
-      model: "sentence-transformers/all-MiniLM-L6-v2",
-    });
+    let results: { pageContent: string; metadata: Record<string, unknown> }[] = [];
 
-    const vectorStore = new SupabaseVectorStore(embeddings, {
-      client,
-      tableName: "documents",
-      queryName: "match_documents",
-    });
+    if (canRetrieve) {
+      try {
+        const client = createClient(
+          process.env.SUPABASE_URL!,
+          process.env.SUPABASE_API!
+        );
 
-    // Retrieve the top 3 most relevant PDF chunks
-    const results = await vectorStore.similaritySearch(query, 3);
+        // We keep Hugging Face for Embeddings because it is cheap, accurate, and reliable.
+        const embeddings = new HuggingFaceInferenceEmbeddings({
+          apiKey: process.env.HUGGINGFACE_TOKEN,
+          model: "sentence-transformers/all-MiniLM-L6-v2",
+        });
+
+        const vectorStore = new SupabaseVectorStore(embeddings, {
+          client,
+          tableName: "documents",
+          queryName: "match_documents",
+        });
+
+        results = await vectorStore.similaritySearch(query, RETRIEVED_CHUNKS);
+      } catch (retrievalError) {
+        console.error("Retrieval failed, reading the knowledge base instead:", retrievalError);
+      }
+    } else {
+      console.warn("No vector store configured, reading the knowledge base instead.");
+    }
 
     // ---------------------------------------------------------
     // STEP 2: GENERATION (The "G" in RAG)
     // ---------------------------------------------------------
-    
+
     // Prepare the "Context" (The facts the AI must read)
-    const contextText = results.map((doc) => doc.pageContent).join("\n\n---\n\n");
-    
+    const retrieved = results.map((doc) => doc.pageContent).join("\n\n---\n\n").trim();
+    const contextText = retrieved || readKnowledgeBase();
+
     // The "System Prompt" (The personality & rules)
     const systemInstruction = `
 You are "${ASSISTANT_NAME}" a helpful BMES (Biomedical Engineering Society) student chat assistant to spread the knowledge about the club.
@@ -83,11 +136,12 @@ the full list is on [the events page](/events)". Prefer linking one page that ac
 answers the question over listing several.
 
 **WHICH SOURCE WINS.** The WHAT IS ON THIS WEBSITE section below is generated from the
-live site, so it is always current. The retrieved documents are PDFs that may be from a
-previous year. For anything current, who the executives are, what events are running,
-contact details, the site section wins and the documents are only background. Never name
-an executive or an event that is not in the site section. Questions about who runs the
-club are about the current executive team: name a few and link [our team](/team).
+live site, so it is always current. The context documents are the chapter knowledge base
+and archived PDFs, which carry history, policy and background and may be a year or two
+old. For anything current, who the executives are, what events are running, contact
+details, the site section wins and the documents are only background. Never name an
+executive or an event that is not in the site section. Questions about who runs the club
+are about the current executive team: name a few and link [our team](/team).
 
 ${buildSiteContext()}
 `;
@@ -125,10 +179,10 @@ ${buildSiteContext()}
     // ---------------------------------------------------------
     // STEP 3: RESPONSE
     // ---------------------------------------------------------
-    return NextResponse.json({ 
+    return NextResponse.json({
       answer: answer,
-      sources: results.map(r => r.metadata.source),
-      matches: results, 
+      sources: results.length > 0 ? results.map(r => r.metadata.source) : [KNOWLEDGE_BASE],
+      matches: results,
       query: query
     });
 

@@ -165,8 +165,9 @@ cannot hand them out; it routes enquiries to `bmes@torontomu.ca` instead.
 ### Re-ingesting
 
 ```bash
-npm run ingest          # skips unchanged files, re-embeds edited ones, adds new ones
-npm run ingest:rebuild  # wipes the table and starts clean
+npm run ingest             # skips unchanged files, re-embeds edited ones, adds new ones
+npm run ingest:rebuild     # wipes the table and starts clean
+npm run ingest -- --dry-run  # prints what it would embed, no credentials needed
 ```
 
 Files are tracked by a hash of their contents, so editing the knowledge base and re-running

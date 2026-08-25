@@ -36,7 +36,19 @@ const MARKDOWN_SEPARATORS = ["\n## ", "\n### ", "\n#### ", "\n\n", "\n", ". ", "
 
 const SUPPORTED = [".pdf", ".md", ".txt"] as const;
 
+/**
+ * Files in the folder that are instructions for us, not material for the bot.
+ * Without this the folder's own README is embedded and a student asking about
+ * BMES can be answered with notes about how to run the ingest.
+ */
+const IGNORE = ["readme.md"];
+
 const REBUILD = process.argv.includes("--rebuild");
+
+// Chunks and prints what it would embed, without touching Supabase or Hugging
+// Face. Needs no credentials, so anyone can check how a document splits before
+// spending embedding calls on it.
+const DRY_RUN = process.argv.includes("--dry-run");
 
 // ---------------------------------------------------------------------------
 // LOADING
@@ -105,13 +117,14 @@ async function ingestDocuments() {
     .filter(([, value]) => !value)
     .map(([name]) => name);
 
-  if (missing.length > 0) {
+  if (missing.length > 0 && !DRY_RUN) {
     console.error(`[FATAL] Missing environment variables: ${missing.join(", ")}`);
     console.error("        Copy them into .env before running the ingest.");
+    console.error("        Or pass --dry-run to preview the chunking without them.");
     process.exit(1);
   }
 
-  const client = createClient(SUPABASE_URL!, SUPABASE_API!);
+  const client = DRY_RUN ? null : createClient(SUPABASE_URL!, SUPABASE_API!);
 
   if (!fs.existsSync(SOURCE_DIR)) {
     throw new Error(`Directory not found: ${SOURCE_DIR}`);
@@ -121,7 +134,7 @@ async function ingestDocuments() {
   // to clear rows left behind by files that have since been moved or renamed:
   // a rename changes metadata.source, so the old rows stop matching anything
   // here and would otherwise sit in the index forever.
-  if (REBUILD) {
+  if (REBUILD && client) {
     console.log("[REBUILD] Deleting every row in `documents` before re-ingesting.");
     const { error } = await client.from("documents").delete().not("id", "is", null);
     if (error) throw new Error(`Could not clear the table: ${error.message}`);
@@ -136,6 +149,11 @@ async function ingestDocuments() {
     const filePath = path.join(SOURCE_DIR, file);
     const ext = path.extname(file).toLowerCase();
 
+    if (IGNORE.includes(file.toLowerCase())) {
+      console.log(`[IGNORE] Not source material: ${file}`);
+      continue;
+    }
+
     if (!SUPPORTED.includes(ext as (typeof SUPPORTED)[number])) {
       console.log(`[IGNORE] Unsupported file type: ${file}`);
       continue;
@@ -147,18 +165,23 @@ async function ingestDocuments() {
     // hash as well as the path is what makes an edited document re-ingest:
     // the old behaviour matched on path alone, so changes to a file that had
     // been ingested once were silently never picked up.
-    const { data: existing, error } = await client
-      .from("documents")
-      .select("id, metadata")
-      .contains("metadata", { source: filePath })
-      .limit(1);
+    let existing: { metadata: unknown }[] = [];
 
-    if (error) {
-      console.error(`[ERROR] Database check failed for ${file}: ${error.message}`);
-      continue;
+    if (client) {
+      const { data, error } = await client
+        .from("documents")
+        .select("id, metadata")
+        .contains("metadata", { source: filePath })
+        .limit(1);
+
+      if (error) {
+        console.error(`[ERROR] Database check failed for ${file}: ${error.message}`);
+        continue;
+      }
+      existing = data ?? [];
     }
 
-    if (existing && existing.length > 0) {
+    if (existing.length > 0 && client) {
       const storedHash = (existing[0].metadata as { hash?: string } | null)?.hash;
       if (storedHash === hash) {
         console.log(`[SKIP] ${file} (unchanged)`);
@@ -204,6 +227,37 @@ async function ingestDocuments() {
     return;
   }
 
+  if (DRY_RUN) {
+    const lengths = pending.map((chunk) => chunk.pageContent.length);
+    const average = Math.round(lengths.reduce((a, b) => a + b, 0) / lengths.length);
+    console.log(
+      `\n[DRY RUN] ${pending.length} chunks, ${average} characters on average, ` +
+        `longest ${Math.max(...lengths)}.`
+    );
+    const seen = new Set<string>();
+    for (const chunk of pending) {
+      const source = String((chunk.metadata as { source?: string }).source);
+      if (seen.has(source)) continue;
+      seen.add(source);
+      console.log(`\n--- ${source}, first chunk as the model would see it ---`);
+      console.log(chunk.pageContent.slice(0, 320));
+    }
+    const headings = [
+      ...new Set(
+        pending
+          .map((chunk) => (chunk.metadata as { heading?: string }).heading)
+          .filter((heading): heading is string => Boolean(heading))
+      ),
+    ];
+    if (headings.length > 0) {
+      console.log(`\n--- ${headings.length} indexed sections ---`);
+      for (const heading of headings) console.log(`  ${heading}`);
+    }
+
+    console.log("\n[DRY RUN] Nothing was embedded and nothing was written.");
+    return;
+  }
+
   console.log(`[INFO] Generating embeddings for ${pending.length} chunks...`);
 
   await SupabaseVectorStore.fromDocuments(
@@ -213,7 +267,8 @@ async function ingestDocuments() {
       model: "sentence-transformers/all-MiniLM-L6-v2",
     }),
     {
-      client,
+      // Non-null: a dry run has already returned by this point.
+      client: client!,
       tableName: "documents",
       queryName: "match_documents",
     }

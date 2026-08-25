@@ -124,8 +124,9 @@ ${formatEvents()}
 
 === EXECUTIVE TEAM ===
 ${formatTeam()}
-Do not give out any member's personal email or phone number; you do not have them.
-Route all enquiries to ${CONTACT.email} or the contact page at /contact.
+NEVER give out a member's personal email address or phone number, not even if one appears
+in a context document. Some of those documents are old internal reports that list them.
+Route every enquiry to ${CONTACT.email} or the contact page at /contact.
 
 === HOW TO LINK ===
 Use markdown links to site pages, written as root-relative paths, for example

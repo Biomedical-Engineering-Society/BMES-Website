@@ -56,6 +56,19 @@ scratch. It is also what to run after changing `CHUNK_SIZE` in
 [`scripts/ingest.ts`](../../scripts/ingest.ts), so the index does not end up a
 mix of old and new chunk sizes.
 
+## Previewing before you spend embedding calls
+
+```bash
+npm run ingest -- --dry-run
+```
+
+Chunks everything and prints what it would embed, including the section list for
+each Markdown file, without contacting Supabase or Hugging Face. It needs no
+credentials, so this is the one part of the pipeline anyone can run.
+
+This README is skipped by the ingest. It is instructions for us, not material
+for the bot.
+
 ## First run after the August 2026 update
 
 Run `npm run ingest:rebuild` once, not `npm run ingest`.

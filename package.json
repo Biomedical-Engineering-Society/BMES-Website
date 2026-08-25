@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "ingest": "ts-node --esm scripts/ingest.ts"
+    "ingest": "ts-node --esm scripts/ingest.ts",
+    "ingest:rebuild": "ts-node --esm scripts/ingest.ts --rebuild"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

@@ -3,67 +3,18 @@ import Image from "next/image";
 import Link from "next/link";
 import PhotoGallery, { type GalleryPhoto } from "../components/PhotoGallery";
 import { CheckIcon } from "../components/BrandIcons";
+import {
+  ABOUT_BENEFITS,
+  ABOUT_FACTS,
+  ABOUT_HISTORY,
+  ABOUT_VALUES,
+} from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
   description:
     "Founded in 2010, BMES at Toronto Metropolitan University is the official student chapter of the global Biomedical Engineering Society.",
 };
-
-const FACTS = [
-  { value: "2010", label: "Founded at Toronto Metropolitan University" },
-  { value: "Official chapter", label: "Of the global Biomedical Engineering Society" },
-  { value: "POD 377", label: "Our office in the Podium Building" },
-];
-
-const VALUES = [
-  {
-    num: "01",
-    title: "Inclusive spaces",
-    body: "Collaborative environments open to every student in the program.",
-  },
-  {
-    num: "02",
-    title: "Academia to industry",
-    body: "Closing the gap between coursework and professional practice.",
-  },
-  {
-    num: "03",
-    title: "Wellness first",
-    body: "Mental health and holistic student well-being, prioritized.",
-  },
-  {
-    num: "04",
-    title: "Technical exploration",
-    body: "Creative problem-solving and hands-on design work.",
-  },
-];
-
-const BENEFITS = [
-  "Hands-on technical workshops that complement your coursework",
-  "Career events, panels and networking with industry professionals",
-  "Mentorship and guidance from upper-year students and alumni",
-  "Leadership, collaboration and communication experience through projects",
-  "A supportive, student-driven community within biomedical engineering",
-];
-
-const HISTORY = [
-  {
-    year: "2010",
-    title: "Chartered at TMU",
-    body: "BMES becomes the official TMU student chapter of the global Biomedical Engineering Society.",
-  },
-  {
-    year: "Since",
-    title: "Grown with the program",
-    body: "The chapter has evolved alongside the biomedical engineering program, adapting its initiatives each year.",
-  },
-  {
-    year: "Today",
-    title: "An active community",
-    body: "Workshops, industry panels, design competitions and networking sessions throughout the academic year.",
-  },
-];
 
 const GALLERY: GalleryPhoto[] = [
   { src: "/media/Group_photo.jpg", alt: "The BMES TMU team together at a chapter event" },
@@ -123,7 +74,7 @@ export default function AboutPage() {
           className="flex flex-col border-t border-hairline pt-2 lg:border-l lg:border-t-0 lg:pl-[34px] lg:pt-0"
           data-reveal=""
         >
-          {FACTS.map((fact) => (
+          {ABOUT_FACTS.map((fact) => (
             <div key={fact.value} className="flex flex-col gap-1.5 border-b border-hairline py-5">
               <dt className="t-num text-[24px] text-brand md:text-[26px]">{fact.value}</dt>
               <dd className="text-sm leading-snug text-muted">{fact.label}</dd>
@@ -151,7 +102,7 @@ export default function AboutPage() {
           </div>
 
           <ul className="flex flex-col" data-reveal="">
-            {VALUES.map((value) => (
+            {ABOUT_VALUES.map((value) => (
               <li
                 key={value.num}
                 className="flex items-start gap-4.5 border-b border-hairline py-5.5"
@@ -179,7 +130,7 @@ export default function AboutPage() {
           <span className="eyebrow">Why join</span>
           <h2 className="t-section-sm">What being part of BMES actually gets you.</h2>
           <ul className="mt-1 flex flex-col gap-3.5">
-            {BENEFITS.map((benefit) => (
+            {ABOUT_BENEFITS.map((benefit) => (
               <li key={benefit} className="flex items-start gap-3.5">
                 <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand text-white">
                   <CheckIcon size={11} />
@@ -220,7 +171,7 @@ export default function AboutPage() {
             className="grid gap-px border-t border-white/28 bg-white/28 md:grid-cols-3"
             data-reveal=""
           >
-            {HISTORY.map((entry) => (
+            {ABOUT_HISTORY.map((entry) => (
               <li key={entry.year} className="flex flex-col gap-3 bg-brand px-7 py-8 md:px-[30px]">
                 <span className="t-num text-[26px] text-white md:text-[30px]">{entry.year}</span>
                 <span className="font-display text-xl font-semibold tracking-[-0.015em] text-white">

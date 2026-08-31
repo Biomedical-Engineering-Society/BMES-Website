@@ -11,11 +11,37 @@ type Message = {
   content: string;
 };
 
-const SUGGESTED_PROMPTS = [
+/**
+ * Openers offered when the panel is empty.
+ *
+ * Only questions the assistant reliably answers belong here: a suggested prompt
+ * that gets turned away reads worse than offering nothing. Three are drawn at
+ * random each time the panel is opened, so the same student sees different ways
+ * in rather than the same three forever.
+ */
+const PROMPT_POOL = [
   "What events do you run?",
-  "Where do I find past exams?",
   "Who is on the exec team?",
+  "Where do I find past exams?",
+  "What is the Synapse Conference?",
+  "How do I join?",
+  "Do I have to be in biomedical engineering?",
+  "What do you do for wellness?",
+  "Can I become an executive?",
+  "Who do you partner with?",
+  "How do I contact you?",
 ];
+
+const PROMPTS_SHOWN = 3;
+
+function pickPrompts() {
+  const pool = [...PROMPT_POOL];
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, PROMPTS_SHOWN);
+}
 
 /** Site links navigate client side; external links open in a new tab. */
 const markdownComponents: Components = {
@@ -36,6 +62,7 @@ export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   /** Stops the launcher's echo ring after the first open. */
   const [hasOpened, setHasOpened] = useState(false);
+  const [prompts, setPrompts] = useState<string[]>([]);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -148,7 +175,7 @@ export default function ChatWidget() {
                 <p className="text-sm leading-relaxed text-muted">
                   Courses, the exam bank, upcoming events, joining a committee. Ask away.
                 </p>
-                {SUGGESTED_PROMPTS.map((prompt) => (
+                {prompts.map((prompt) => (
                   <button
                     key={prompt}
                     type="button"
@@ -254,7 +281,11 @@ export default function ChatWidget() {
           type="button"
           onClick={() => {
             setHasOpened(true);
-            setIsOpen((open) => !open);
+            setIsOpen((open) => {
+              // Draw a fresh set each time it is opened.
+              if (!open) setPrompts(pickPrompts());
+              return !open;
+            });
           }}
           aria-expanded={isOpen}
           aria-label={isOpen ? "Close chat" : `Ask ${ASSISTANT_NAME}, the BMES student assistant`}

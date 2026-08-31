@@ -6,7 +6,7 @@ import {
   todayISO,
   upcomingEvents,
 } from "./events";
-import { CONTACT, LINKS, PILLARS, SITE } from "./site";
+import { CONTACT, LINKS, SITE } from "./site";
 import { TEAM, TEAM_YEAR } from "./team";
 
 /**
@@ -59,15 +59,9 @@ function formatEvents(): string {
     const when = isPastEvent(event, today) ? "PAST" : "UPCOMING";
     const cta = eventCta(event, today);
     const link = cta.external ? cta.href : `${cta.href} (page on this site)`;
-    return [
-      `- ${event.title} [${when}]`,
-      `  Date: ${formatLongDate(event.date)}`,
-      `  Time: ${event.time}`,
-      `  Where: ${event.location}`,
-      `  Category: ${event.category}`,
-      `  About: ${event.description}`,
-      `  More: ${link}`,
-    ].join("\n");
+    // No description here: it is already in the knowledge base, and repeating
+    // it would make this the largest block in a prompt sent on every question.
+    return `- ${event.title} [${when}] ${formatLongDate(event.date)}, ${event.time}, ${event.location}. ${event.category}. ${link}`;
   }).join("\n");
 }
 
@@ -93,25 +87,14 @@ is answered by one of them, link to it so the student can go straight there.
 ${SITE_MAP.map((page) => `- ${page.name} (${page.path}): ${page.covers}`).join("\n")}
 
 === THE CHAPTER ===
-${SITE.name} at ${SITE.university}. Tagline: "${SITE.tagline}"
-Founded 2010, the official TMU student chapter of the global Biomedical Engineering Society.
-A student-led organization fostering innovation at the intersection of engineering and healthcare.
-Membership is open to every biomedical engineering student at TMU. There is nothing to sign up
-for and no fee: come to an event or say hello.
-
-Mission: to support and empower biomedical engineering students at TMU by promoting community,
-career development and wellness.
-The four pillars, shown on the home page:
-${PILLARS.map((p) => `- ${p.title}: ${p.body}`).join("\n")}
+${SITE.name} at ${SITE.university}. Founded 2010, the official TMU student chapter of the
+global Biomedical Engineering Society. Open to every TMU student, no fee and nothing to
+sign up for. Mission and pillars are in the knowledge base extracts.
 
 === CONTACT AND LINKS ===
-- Office: ${CONTACT.office}, ${CONTACT.building}, ${CONTACT.addressLines.join(", ")}
-- Email: ${CONTACT.email}
-- Instagram: ${LINKS.instagram} (${LINKS.instagramHandle})
-- LinkedIn: ${LINKS.linkedin}
-- Linktree: ${LINKS.linktree}
-- MUES exam bank, linked from the home page quick links: ${LINKS.examBank}
-- Contact form on the site: /contact
+- Office ${CONTACT.office}, ${CONTACT.building}, ${CONTACT.addressLines.join(", ")}
+- MUES exam bank: ${LINKS.examBank}
+- Contact form: /contact
 
 === EVENTS CURRENTLY ON THE SITE (today is ${todayISO()}) ===
 ${
@@ -124,14 +107,11 @@ ${formatEvents()}
 
 === EXECUTIVE TEAM ===
 ${formatTeam()}
-NEVER give out a member's personal email address or phone number, not even if one appears
-in a context document. Some of those documents are old internal reports that list them.
-Route every enquiry to ${CONTACT.email} or the contact page at /contact.
+Never give out a member's personal email address or phone number. Route every
+enquiry to ${CONTACT.email} or the contact page at /contact.
 
 === HOW TO LINK ===
-Use markdown links to site pages, written as root-relative paths, for example
-[the events page](/events) or [our team](/team). Never invent a page that is not
-in the list above. Use full https URLs only for external links such as Instagram,
-LinkedIn, Linktree, the exam bank, or an event's registration page.
+Site pages are root-relative markdown links, e.g. [the events page](/events).
+Full https URLs only for external links such as Instagram or a registration page.
 `.trim();
 }

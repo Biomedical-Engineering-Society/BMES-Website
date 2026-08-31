@@ -11,8 +11,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "ingest": "ts-node --esm scripts/ingest.ts",
-    "ingest:rebuild": "ts-node --esm scripts/ingest.ts --rebuild"
+    "ingest": "tsx scripts/ingest.ts",
+    "ingest:rebuild": "tsx scripts/ingest.ts --rebuild",
+    "ingest:preview": "tsx scripts/ingest.ts --dry-run"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -41,7 +42,7 @@
     "eslint-config-next": "^16.1.1",
     "postcss": "^8.5.26",
     "tailwindcss": "^4.1.18",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.23.13",
     "typescript": "5.9.3"
   }
 }

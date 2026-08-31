@@ -6,7 +6,17 @@ import {
   todayISO,
   upcomingEvents,
 } from "./events";
-import { CONTACT, LINKS, SITE } from "./site";
+import {
+  ABOUT_BENEFITS,
+  ABOUT_FACTS,
+  ABOUT_HISTORY,
+  ABOUT_VALUES,
+  CONTACT,
+  HOME_STATS,
+  PILLARS,
+  QUICK_LINKS,
+  SITE,
+} from "./site";
 import { TEAM, TEAM_YEAR } from "./team";
 
 /**
@@ -89,11 +99,23 @@ ${SITE_MAP.map((page) => `- ${page.name} (${page.path}): ${page.covers}`).join("
 === THE CHAPTER ===
 ${SITE.name} at ${SITE.university}. Founded 2010, the official TMU student chapter of the
 global Biomedical Engineering Society. Open to every TMU student, no fee and nothing to
-sign up for. Mission and pillars are in the knowledge base extracts.
+sign up for.
+
+=== QUICK LINKS, IN THE BAND UNDER THE HOME PAGE HERO ===
+These are on the site. Answer from them rather than turning the question away.
+${QUICK_LINKS.map((link) => `- ${link.label} (${link.kicker}): ${link.covers}. ${link.href}`).join("\n")}
+
+=== WHAT THE PAGES SAY ===
+Home, stat row: ${HOME_STATS.map((s) => `${s.value}, ${s.label}`).join("; ")}
+Home, the four mission pillars: ${PILLARS.map((p) => `${p.title}, ${p.body}`).join(" ")}
+About, fact rail: ${ABOUT_FACTS.map((f) => `${f.value}, ${f.label}`).join("; ")}
+About, the four values: ${ABOUT_VALUES.map((v) => `${v.title}, ${v.body}`).join(" ")}
+About, why join: ${ABOUT_BENEFITS.join("; ")}
+About, history: ${ABOUT_HISTORY.map((h) => `${h.year}, ${h.title}, ${h.body}`).join(" ")}
 
 === CONTACT AND LINKS ===
 - Office ${CONTACT.office}, ${CONTACT.building}, ${CONTACT.addressLines.join(", ")}
-- MUES exam bank: ${LINKS.examBank}
+- Email ${CONTACT.email}. This is the address to give out, not any other.
 - Contact form: /contact
 
 === EVENTS CURRENTLY ON THE SITE (today is ${todayISO()}) ===

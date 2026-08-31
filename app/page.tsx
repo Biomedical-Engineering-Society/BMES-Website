@@ -3,16 +3,10 @@ import Link from "next/link";
 import FeaturedEvents from "./components/FeaturedEvents";
 import HeroVideo from "./components/HeroVideo";
 import { featuredEvents, upcomingEvents } from "@/lib/events";
-import { PILLARS, QUICK_LINKS } from "@/lib/site";
+import { HOME_STATS, PILLARS, QUICK_LINKS } from "@/lib/site";
 
 /** The featured showcase depends on today's date, so do not freeze it at deploy time. */
 export const revalidate = 3600;
-
-const STATS = [
-  { value: "2010", label: "Chartered at TMU" },
-  { value: "POD 377", label: "Our office, Podium Building" },
-  { value: "Official", label: "Student chapter of the global BMES" },
-];
 
 export default function Home() {
   const featured = featuredEvents(3);
@@ -111,7 +105,7 @@ export default function Home() {
           </Link>
 
           <dl className="mt-4 grid grid-cols-1 gap-7 border-t border-hairline pt-8 sm:grid-cols-3">
-            {STATS.map((stat) => (
+            {HOME_STATS.map((stat) => (
               <div key={stat.value} className="flex flex-col gap-1.5">
                 <dt className="t-num text-[30px] text-brand md:text-[34px]">{stat.value}</dt>
                 <dd className="text-sm leading-snug text-muted">{stat.label}</dd>

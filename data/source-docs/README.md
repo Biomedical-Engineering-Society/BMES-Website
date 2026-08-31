@@ -5,9 +5,14 @@ stores them in Supabase.
 
 Supported file types: `.md`, `.txt`, `.pdf`.
 
-**Keep these out of `public/`.** Anything under `public/` is served at the site
-root, so a file there is downloadable by anyone who knows or guesses its name.
-Several of these carry names, emails and phone numbers.
+The knowledge base below is the only source. The earlier internal PDFs (club
+development report, year in review, constitution, chatbot notes) were removed in
+August 2026: the knowledge base supersedes their content, and one of them opened
+with a table of executives' personal email addresses that the assistant could
+then retrieve.
+
+**Keep anything you add out of `public/`.** Anything under `public/` is served at
+the site root, so a file there is downloadable by anyone who guesses its name.
 
 ## The knowledge base
 
@@ -59,7 +64,7 @@ mix of old and new chunk sizes.
 ## Previewing before you spend embedding calls
 
 ```bash
-npm run ingest -- --dry-run
+npm run ingest:preview
 ```
 
 Chunks everything and prints what it would embed, including the section list for
@@ -69,15 +74,11 @@ credentials, so this is the one part of the pipeline anyone can run.
 This README is skipped by the ingest. It is instructions for us, not material
 for the bot.
 
-## First run after the August 2026 update
+## If the index looks wrong
 
-Run `npm run ingest:rebuild` once, not `npm run ingest`.
-
-The index still holds rows from two earlier states: chunks embedded at the old
-300 character size, and chunks whose `metadata.source` points at
-`public/media/...` from before the PDFs moved into this folder. Neither matches
-anything the current script looks for, so an incremental run would leave both in
-place and retrieval would keep pulling stale fragments. A rebuild clears them.
+Run `npm run ingest:rebuild`. Deleted and renamed files leave rows behind that an
+incremental run cannot match, so retrieval keeps pulling fragments of documents
+that are no longer here. A rebuild clears the table and re-embeds the folder.
 
 ## Environment
 

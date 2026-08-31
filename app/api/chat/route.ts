@@ -202,14 +202,18 @@ ${contextText}
 
 Question: ${query}` },
             ],
-            max_tokens: 500,
+            max_tokens: 800,
             temperature: 0.1, // Low temperature = strict adherence to the context
-            // gpt-oss models reason before answering, and those tokens come out
-            // of max_tokens. On anything non-trivial the default effort spent
-            // the whole budget thinking and returned a truncated sentence.
-            // Everything here is a lookup in supplied context, so low is right,
-            // and it is roughly three times cheaper per answer.
-            reasoning_effort: "low",
+            // gpt-oss models reason before answering and those tokens come out of
+            // max_tokens, so this needs headroom or the answer itself is truncated.
+            //
+            // Not "low". The site facts are meant to outrank the retrieved
+            // extracts, and at low effort the model stopped doing that: it
+            // answered "who runs the club" with generic role titles instead of the
+            // current executives, and denied knowing about the exam bank that is
+            // listed in those same facts. Medium costs nothing overall, because
+            // the prompt dominates the token count either way.
+            reasoning_effort: "medium",
           });
 
           const content = response.choices[0]?.message?.content?.trim();

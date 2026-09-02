@@ -41,9 +41,9 @@ export const TEAM: TeamGroup[] = [
     blurb: "The team that sets direction for the chapter and answers for it.",
     members: [
       { name: "Ryson Yau", role: "President", image: "rysonyau.jpg" },
-      { name: "Avril Sacramento", role: "Vice President", image: "AvrilSacramento.jpg" },
+      { name: "Avril Sacramento", role: "Vice President", image: "avrilsacramento.jpg" },
       { name: "Saidolim Maxmudov", role: "VP of Finance", image: "saidolimmaxmudov.jpg" },
-      { name: "Chantelle DeSagun", role: "VP of Operations", image: "chantelledesagun.jpg" },
+      { name: "Chantelle DeSagun", role: "VP of Operations", image: "chantelledesagun.png" },
       { name: "Leo Lopez-Papic", role: "VP of Operations", image: "leolopez.jpg" },
       { name: "Gabrielle Solano", role: "VP of Events", image: "GabrielleSolano.jpg" },
       { name: "Raghangi Gunaseelan", role: "VP of Events", image: "raghangigunaseelan.jpg" },

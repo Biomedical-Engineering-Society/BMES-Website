@@ -45,7 +45,7 @@ export const TEAM: TeamGroup[] = [
       { name: "Saidolim Maxmudov", role: "VP of Finance", image: "saidolimmaxmudov.jpg" },
       { name: "Chantelle DeSagun", role: "VP of Operations", image: "chantelledesagun.png" },
       { name: "Leo Lopez-Papic", role: "VP of Operations", image: "leolopez.jpg" },
-      { name: "Gabrielle Solano", role: "VP of Events", image: "GabrielleSolano.jpg" },
+      { name: "Gabrielle Solano", role: "VP of Events", image: "gabriellesolano.jpg" },
       { name: "Raghangi Gunaseelan", role: "VP of Events", image: "raghangigunaseelan.jpg" },
       { name: "Theresa Cosentino", role: "VP of Communications", image: "theresacosentino.png" },
       { name: "Hala Ayad", role: "VP of Communications", image: "halaayad.jpg" },

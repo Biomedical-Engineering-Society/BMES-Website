@@ -5,7 +5,7 @@
     "date": "2026-02-14",
     "time": "10:30 AM - 6:00 PM EST",
     "location": "Daphne Cockwell Complex (DCC), 288 Church Street",
-    "description": "Toronto's biggest Biomedical Engineering Conference! Join us as we fire the next signal in healthcare innovation. Includes complimentary meals, LinkedIn headshots, and a Case Competition.",
+    "description": "The BMES Annual Conference. Featured interactive workshops, a case competition, a keynote speaker, structured roundtable networking, and professional LinkedIn headshots.",
     "category": "Science & Tech",
     "link": "https://www.eventbrite.ca/e/bmes-synapse-conference-2026-tickets-1981463940987",
     "images": [
@@ -39,5 +39,166 @@
       "/media/About.png",
       "/media/cubec.jpg"
     ]
+  },
+  {
+    "id": 4,
+    "title": "Board Games & Trivia Night",
+    "date": "2024-09-27",
+    "time": "6:00 PM EST",
+    "location": "George Vari Engineering and Computing Centre (ENG 101)",
+    "description": "An evening filled with exciting games and trivia to put your knowledge to the test. The biomedical engineering community got to meet the BMES executive team for the 2024-2025 school year.",
+    "category": "Social",
+    "link": "#",
+    "images": [
+      "/media/events/board-games-trivia-2024/01.jpg",
+      "/media/events/board-games-trivia-2024/02.jpg"
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Alumni Night & Resume Roast",
+    "date": "2024-10-28",
+    "time": "6:00 PM - 8:00 PM EST",
+    "location": "George Vari Engineering and Computing Centre, ENG (Sears Atrium)",
+    "description": "An opportunity to network with fellow alumni, connect with industry professionals and get feedback during our Resume Roast.",
+    "category": "Networking",
+    "link": "#",
+    "images": [
+      "/media/events/alumni-night-2024/01.jpg",
+      "/media/events/alumni-night-2024/02.jpg",
+      "/media/events/alumni-night-2024/03.jpg",
+      "/media/events/alumni-night-2024/04.jpg",
+      "/media/events/alumni-night-2024/05.jpg",
+      "/media/events/alumni-night-2024/06.jpg"
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Engineering \"Trick or Treat\" Pursuit",
+    "date": "2024-10-31",
+    "time": "2:00 PM - 5:00 PM EST",
+    "location": "Podium Building (POD 377)",
+    "description": "A collaborative event with many of the engineering student groups at TMU. Attendees visited many club offices, including the Biomedical Engineering Society office in Podium Building room 377, to get delicious and sugary treats for Halloween.",
+    "category": "Social",
+    "link": "#"
+  },
+  {
+    "id": 7,
+    "title": "Pub & Karaoke Night",
+    "date": "2024-11-20",
+    "time": "6:30 PM EST",
+    "location": "The MET (Campus Pub)",
+    "description": "In collaboration with the Metropolitan Undergraduate Engineering Society (MUES) and Chemical Engineering Course Union (CHEMU), a social event for karaoke and food at the campus pub.",
+    "category": "Social",
+    "link": "#"
+  },
+  {
+    "id": 8,
+    "title": "MetMeetMed",
+    "date": "2024-11-21",
+    "time": "6:00 PM - 8:00 PM EST",
+    "location": "George Vari Engineering and Computing Centre (ENG LG05)",
+    "description": "A panel discussion to learn about the future of health tech, specifically FemTech and fertility-related biomedical engineering, with Dr. Narjes Allahrabbi, founder & CEO of Fertilead.",
+    "category": "Science & Tech",
+    "link": "#",
+    "images": [
+      "/media/events/metmeetmed-2024/01.jpg"
+    ]
+  },
+  {
+    "id": 9,
+    "title": "Rest & Reset",
+    "date": "2024-11-28",
+    "time": "6:00 PM - 8:00 PM EST",
+    "location": "George Vari Engineering and Computing Centre (ENG LG12)",
+    "description": "A social event for biomedical engineers to get their minds off exams during exam season, featuring a gingerbread house making competition, bracelet making, origami, and free exam care packages. 100 exam care packages were distributed.",
+    "category": "Wellness",
+    "link": "#"
+  },
+  {
+    "id": 10,
+    "title": "CPR-C Certification Workshop",
+    "date": "2025-02-05",
+    "time": "6:00 PM - 9:00 PM EST",
+    "location": "Daphne Cockwell Complex (DCC 350)",
+    "description": "A workshop to learn CPR-C and standard first aid with AED and earn certification.",
+    "category": "Workshop",
+    "link": "#",
+    "images": [
+      "/media/events/cpr-workshop-2025/01.jpg",
+      "/media/events/cpr-workshop-2025/02.jpg",
+      "/media/events/cpr-workshop-2025/03.jpg",
+      "/media/events/cpr-workshop-2025/04.jpg"
+    ]
+  },
+  {
+    "id": 11,
+    "title": "BMES Conference 2025",
+    "date": "2025-03-16",
+    "time": "9:00 AM - 7:00 PM EST",
+    "location": "Daphne Cockwell Complex (DCC)",
+    "description": "The first BMES Annual Conference. Featured engaging discussions, hands-on workshops, valuable networking opportunities and a competitive case competition, with keynote speaker Dr. DiCecco, Assistant Professor at the University of Waterloo who leads the Regenerative Biomaterials Innovation Group.",
+    "category": "Science & Tech",
+    "link": "#",
+    "images": [
+      "/media/events/conference-2025/01.jpg",
+      "/media/events/conference-2025/02.jpg",
+      "/media/events/conference-2025/03.jpg",
+      "/media/events/conference-2025/04.jpg",
+      "/media/events/conference-2025/05.jpg"
+    ]
+  },
+  {
+    "id": 12,
+    "title": "Boardgames Night",
+    "date": "2025-09-19",
+    "time": "6:00 PM - 8:00 PM EST",
+    "location": "George Vari Engineering and Computing Centre (ENG 101)",
+    "description": "An evening filled with exciting games and trivia to put your knowledge to the test. The biomedical engineering community got to meet the BMES executive team for the 2025-2026 school year.",
+    "category": "Social",
+    "link": "#",
+    "images": [
+      "/media/events/boardgames-night-2025/01.jpg"
+    ]
+  },
+  {
+    "id": 13,
+    "title": "BME Design Competition",
+    "date": "2025-11-01",
+    "time": "9:00 AM - 4:30 PM EST",
+    "location": "Daphne Cockwell Complex (DCC 103)",
+    "description": "A competition to design and build biomedical bionic/prosthetic arms to complete various hands-on tasks using simple supplies found off the shelf. Teams demonstrated their designs to judges and competed for prizes.",
+    "category": "Competition",
+    "link": "#"
+  },
+  {
+    "id": 14,
+    "title": "Pitch Perfect Karaoke Night",
+    "date": "2025-11-21",
+    "time": "6:00 PM - 8:00 PM EST",
+    "location": "The MET (Campus Pub)",
+    "description": "In collaboration with the Biomedical Engineering Course Union (BECU) and Metropolitan Undergraduate Engineering Society (MUES), a fun evening to socialize and show off your karaoke skills.",
+    "category": "Social",
+    "link": "#"
+  },
+  {
+    "id": 15,
+    "title": "Rest & Reset",
+    "date": "2025-11-28",
+    "time": "6:00 PM - 8:00 PM EST",
+    "location": "Kerr Hall East (KHE 117)",
+    "description": "A de-stress event featuring ornament decorating, gingerbread house making, care packages and free food.",
+    "category": "Wellness",
+    "link": "#"
+  },
+  {
+    "id": 16,
+    "title": "Rewind Before the Grind",
+    "date": "2026-04-02",
+    "time": "6:00 PM - 9:00 PM EST",
+    "location": "Kerr Hall East (KHE 129)",
+    "description": "A de-stress event featuring board games, letter making, slime making, plant pot painting, care packages, Lego building, and a movie. Aimed toward biomedical engineering students and first-year engineering students, the event was planned and executed by the first-year representatives of the Biomedical Engineering Society.",
+    "category": "Wellness",
+    "link": "#"
   }
 ]

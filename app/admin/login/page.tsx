@@ -13,7 +13,7 @@ export default async function LoginPage() {
       <div className="card p-8">
         <h1 className="font-display text-2xl font-semibold text-ink">Sign in</h1>
         <p className="mt-2 text-[15px] leading-[1.6] text-muted">
-          For the BMES executive team. Ask the webmaster for the admin password.
+          For the BMES executive team.
         </p>
         <LoginForm />
       </div>

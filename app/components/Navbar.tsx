@@ -82,6 +82,7 @@ export default function Navbar() {
             const active = isActive(pathname, item.href);
             return (
               <Link
+                target={item.href.startsWith("http") ? "_blank" : undefined}
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
@@ -134,6 +135,7 @@ export default function Navbar() {
             const active = isActive(pathname, item.href);
             return (
               <Link
+                target={item.href.startsWith("http") ? "_blank" : undefined}
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}

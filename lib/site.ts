@@ -46,6 +46,7 @@ export const NAV: NavItem[] = [
   { label: "About", href: "/about" },
   { label: "Team", href: "/team" },
   { label: "Events", href: "/events" },
+  { label: "Shop", href: "https://muesshop.square.site/shop/bmes/CYINXRXG52XMKYHVZJETZ2JU?page=1&limit=30&sort_by=category_order&sort_order=asc" },
 ];
 
 /**

@@ -82,6 +82,7 @@ body and UI. Use the type classes rather than raw sizes:
 | Chatbot UI          | `app/components/ChatWidget.tsx`, API at `app/api/chat/route.ts`             |
 | Pages               | `app/page.tsx`, `app/about/`, `app/events/`, `app/team/`, `app/contact/`    |
 | Event data + helpers| `data/events.json`, `lib/events.ts`                                        |
+| Admin tool          | `app/admin/`, `app/api/admin/`, `lib/admin/`, `proxy.ts`                   |
 | Team roster         | `lib/team.ts`                                                              |
 | Links and contact   | `lib/site.ts`                                                              |
 | What the bot knows  | `lib/siteContext.ts` (live site), `data/source-docs/` (knowledge base)      |
@@ -194,8 +195,14 @@ the one-off rebuild the August 2026 update needs.
 | `RESEND_API_KEY`     | The contact form. Without it the form returns a clear error rather than failing silently |
 | `CONTACT_TO_EMAIL`   | Optional. Defaults to `bmes@torontomu.ca`                         |
 | `CONTACT_FROM_EMAIL` | Optional. Defaults to Resend's test sender, which only delivers to the Resend account owner. Set a verified domain sender before launch |
+| `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | The `/admin` tool's shared password and cookie signing secret (32+ characters). Without them nobody can sign in |
+| `GITHUB_TOKEN`       | Lets `/admin` save by committing to the repo. Fine-grained, this repo only, Contents read and write. Without it, saving only works locally under `npm run dev` |
+| `GITHUB_REPO`, `GITHUB_BRANCH` | Optional. Where `/admin` commits. Default to this repo and `main`; use a sandbox branch for Preview deployments |
+
+Setup details for the admin tool are in [`data/HOW_TO_UPDATE_EVENTS.md`](data/HOW_TO_UPDATE_EVENTS.md).
 
 ## Working on the repo
 
-Never push directly to `main`. Branch, commit, open a pull request. See `instruction.txt` for the
+Never push directly to `main`. Branch, commit, open a pull request. (The one exception is the
+`/admin` tool, which commits event changes straight to `main` by design, one commit per save.) See `instruction.txt` for the
 full git walkthrough.

@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import ChatWidget from "./components/ChatWidget";
 import RouteTransition from "./components/RouteTransition";
 import RevealOnScroll from "./components/RevealOnScroll";
+import SiteChrome from "./components/SiteChrome";
 import { SITE } from "@/lib/site";
 
 const outfit = Outfit({
@@ -77,13 +78,17 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        <Navbar />
+        <SiteChrome>
+          <Navbar />
+        </SiteChrome>
 
         <main id="main">{children}</main>
 
-        <Footer />
-        <ChatWidget />
-        <RouteTransition />
+        <SiteChrome>
+          <Footer />
+          <ChatWidget />
+          <RouteTransition />
+        </SiteChrome>
         <RevealOnScroll />
       </body>
     </html>

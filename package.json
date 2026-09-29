@@ -23,6 +23,8 @@
     "@supabase/supabase-js": "^2.89.0",
     "dotenv": "^16.4.5",
     "groq-sdk": "^0.37.0",
+    "heic-to": "^1.5.2",
+    "jose": "^6.2.12",
     "langchain": "^1.2.3",
     "next": "^16.3.0",
     "pdf-parse": "^1.1.1",
@@ -30,7 +32,8 @@
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.2",
     "react-markdown": "^10.1.0",
-    "resend": "^6.9.2"
+    "resend": "^6.9.2",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

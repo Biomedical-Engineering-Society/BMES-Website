@@ -24,8 +24,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </Link>
             {admin && (
               <>
-                <span className="text-muted">
+                <span className="text-muted" title={admin.email ?? "Signed in with the shared password"}>
                   Signed in as <strong className="text-ink">{admin.name}</strong>
+                  <span className="ml-2 rounded-full bg-brand-tint px-2 py-0.5 text-xs font-bold text-brand">
+                    {admin.method === "password" ? "Editor (password)" : admin.role === "owner" ? "Owner" : "Editor"}
+                  </span>
                 </span>
                 <form action={logout}>
                   <button type="submit" className="btn btn-outline btn-sm">

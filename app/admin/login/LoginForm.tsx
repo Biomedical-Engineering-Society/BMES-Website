@@ -1,11 +1,11 @@
 "use client";
 
 import { useActionState } from "react";
-import { login, type LoginState } from "../actions";
+import { passwordLogin, type LoginState } from "../actions";
 import { fieldClass, labelClass } from "../components/formStyles";
 
 export default function LoginForm() {
-  const [state, action, pending] = useActionState<LoginState, FormData>(login, {});
+  const [state, action, pending] = useActionState<LoginState, FormData>(passwordLogin, {});
 
   return (
     <form action={action} className="mt-6 flex flex-col gap-5">
@@ -23,7 +23,7 @@ export default function LoginForm() {
         </p>
       )}
       <button type="submit" disabled={pending} className="btn btn-primary w-full disabled:opacity-60">
-        {pending ? "Signing in…" : "Sign in"}
+        {pending ? "Signing in…" : "Sign in with password"}
       </button>
     </form>
   );

@@ -195,7 +195,11 @@ the one-off rebuild the August 2026 update needs.
 | `RESEND_API_KEY`     | The contact form. Without it the form returns a clear error rather than failing silently |
 | `CONTACT_TO_EMAIL`   | Optional. Defaults to `bmes@torontomu.ca`                         |
 | `CONTACT_FROM_EMAIL` | Optional. Defaults to Resend's test sender, which only delivers to the Resend account owner. Set a verified domain sender before launch |
-| `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | The `/admin` tool's shared password and cookie signing secret (32+ characters). Without them nobody can sign in |
+| `ADMIN_SESSION_SECRET` | Signs `/admin` cookies (32+ characters). Required for any sign-in |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | "Sign in with Google" for `/admin` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only key for the `/admin` access list tables (`supabase/admin-access.sql`) |
+| `ADMIN_OWNER_EMAILS` | Comma-separated backup owners who can always sign in, even if the access list is down |
+| `ADMIN_PASSWORD`     | Optional. Shared-password fallback for `/admin`, editor rights only |
 | `GITHUB_TOKEN`       | Lets `/admin` save by committing to the repo. Fine-grained, this repo only, Contents read and write. Without it, saving only works locally under `npm run dev` |
 | `GITHUB_REPO`, `GITHUB_BRANCH` | Optional. Where `/admin` commits. Default to this repo and `main`; use a sandbox branch for Preview deployments |
 

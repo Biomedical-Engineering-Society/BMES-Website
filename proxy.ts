@@ -12,7 +12,8 @@ import { SESSION_COOKIE, verifySession } from "@/lib/admin/sessionToken";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isApi = pathname.startsWith("/api/");
-  const isLogin = pathname === "/admin/login";
+  // The login page, and the request-access page for people Google vouched for but who aren't on the list.
+  const isLogin = pathname === "/admin/login" || pathname === "/admin/no-access";
 
   let response: NextResponse;
   if (!isApi && !isLogin && !(await verifySession(request.cookies.get(SESSION_COOKIE)?.value))) {

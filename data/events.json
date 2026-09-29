@@ -206,7 +206,14 @@
     "location": "Kerr Hall East (KHE 117)",
     "description": "A de-stress event featuring ornament decorating, gingerbread house making, care packages and free food.",
     "category": "Wellness",
-    "link": "#"
+    "link": "#",
+    "images": [
+      "/media/events/rest-and-reset-2025/01.jpg",
+      "/media/events/rest-and-reset-2025/02.jpg",
+      "/media/events/rest-and-reset-2025/03.jpg",
+      "/media/events/rest-and-reset-2025/04.jpg",
+      "/media/events/rest-and-reset-2025/05.jpg"
+    ]
   },
   {
     "id": 16,

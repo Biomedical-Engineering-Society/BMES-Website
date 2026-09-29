@@ -45,6 +45,11 @@ export const metadata: Metadata = {
     locale: "en_CA",
     type: "website",
   },
+  // Proves to Google Search Console that the club owns this site, which Google
+  // requires before publishing the admin tool's "Sign in with Google" screen.
+  verification: {
+    google: "dgk4jIRlNx3FRx8dkUXawR9K1mzpZO8Hhlc7UxxA8IY",
+  },
 };
 
 export const viewport: Viewport = {

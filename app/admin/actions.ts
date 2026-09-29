@@ -3,7 +3,7 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { redirect } from "next/navigation";
 import { endSession, startSession } from "@/lib/admin/session";
-import { adminConfigured } from "@/lib/admin/sessionToken";
+import { adminConfigured, passwordEnabled } from "@/lib/admin/sessionToken";
 
 export type LoginState = { error?: string };
 
@@ -13,10 +13,12 @@ function passwordMatches(attempt: string): boolean {
   return timingSafeEqual(digest(attempt), digest(process.env.ADMIN_PASSWORD ?? ""));
 }
 
-export async function login(_previous: LoginState, formData: FormData): Promise<LoginState> {
-  if (!adminConfigured()) {
-    return { error: "The admin tool is not set up yet. ADMIN_PASSWORD and ADMIN_SESSION_SECRET need adding in Vercel." };
-  }
+/**
+ * The shared-password fallback. It only ever grants editor rights, so it can
+ * edit content but never change who has access.
+ */
+export async function passwordLogin(_previous: LoginState, formData: FormData): Promise<LoginState> {
+  if (!adminConfigured() || !passwordEnabled()) return { error: "Password sign-in is turned off. Use Google." };
 
   // Keep it on one line and short: it ends up in commit messages.
   const name = String(formData.get("name") ?? "").replace(/\s+/g, " ").trim().slice(0, 40);
@@ -29,7 +31,7 @@ export async function login(_previous: LoginState, formData: FormData): Promise<
     return { error: "That password is not right." };
   }
 
-  await startSession({ name });
+  await startSession({ name, email: null, role: "editor", method: "password" });
   redirect("/admin");
 }
 

@@ -1,4 +1,4 @@
-import { getAdmin, unauthorizedResponse } from "@/lib/admin/session";
+import { actorLabel, getAdmin, unauthorizedResponse } from "@/lib/admin/session";
 import { getStore, StoreError } from "@/lib/admin/store";
 import { applyEventOp, EventOpError, type EventOp } from "@/lib/admin/eventsRepo";
 
@@ -19,7 +19,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   try {
-    const result = await applyEventOp(store, body, admin.name);
+    const result = await applyEventOp(store, body, actorLabel(admin));
     return Response.json({ ...result, store: store.kind });
   } catch (error) {
     if (error instanceof EventOpError) {

@@ -21,20 +21,6 @@
     ]
   },
   {
-    "id": 3,
-    "title": "Industry Night & Networking",
-    "date": "2026-03-15",
-    "time": "5:30 PM - 8:30 PM EST",
-    "location": "Student Learning Centre (SLC)",
-    "description": "Meet industry professionals from leading biotech firms in Toronto. Bring your resume and your best elevator pitch!",
-    "category": "Networking",
-    "link": "#",
-    "images": [
-      "/media/About.png",
-      "/media/cubec.jpg"
-    ]
-  },
-  {
     "id": 4,
     "title": "Board Games & Trivia Night",
     "date": "2024-09-27",

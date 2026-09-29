@@ -21,20 +21,6 @@
     ]
   },
   {
-    "id": 2,
-    "title": "BME Unfiltered: Career Panel",
-    "date": "2026-02-04",
-    "time": "6:00 PM - 8:00 PM EST",
-    "location": "George Vari Engineering and Computing Centre, ENG (Sears Atrium)",
-    "description": "Get ready to hear real talk from professionals in BME Unfiltered. Current trends, raw advice, and networking. Collab event with MUES. Food provided!",
-    "category": "Career",
-    "link": "#",
-    "images": [
-      "/media/Group_photo.jpg",
-      "/media/DSC_0154.JPG"
-    ]
-  },
-  {
     "id": 3,
     "title": "Industry Night & Networking",
     "date": "2026-03-15",

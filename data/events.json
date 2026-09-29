@@ -200,5 +200,15 @@
     "description": "A de-stress event featuring board games, letter making, slime making, plant pot painting, care packages, Lego building, and a movie. Aimed toward biomedical engineering students and first-year engineering students, the event was planned and executed by the first-year representatives of the Biomedical Engineering Society.",
     "category": "Wellness",
     "link": "#"
+  },
+  {
+    "id": 17,
+    "title": "BME Coop Panel",
+    "date": "2026-10-07",
+    "time": "6:00 PM - 9:00 PM EST",
+    "location": "TBD",
+    "description": "Talk to BME students currently in their coop and get tips and tricks to landing a coop!",
+    "category": "Career",
+    "link": "#"
   }
 ]

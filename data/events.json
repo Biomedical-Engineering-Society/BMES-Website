@@ -189,7 +189,14 @@
     "location": "The MET (Campus Pub)",
     "description": "In collaboration with the Biomedical Engineering Course Union (BECU) and Metropolitan Undergraduate Engineering Society (MUES), a fun evening to socialize and show off your karaoke skills.",
     "category": "Social",
-    "link": "#"
+    "link": "#",
+    "images": [
+      "/media/events/pitch-perfect-karaoke-night-2025/01.jpg",
+      "/media/events/pitch-perfect-karaoke-night-2025/02.jpg",
+      "/media/events/pitch-perfect-karaoke-night-2025/03.jpg",
+      "/media/events/pitch-perfect-karaoke-night-2025/04.jpg",
+      "/media/events/pitch-perfect-karaoke-night-2025/05.jpg"
+    ]
   },
   {
     "id": 15,

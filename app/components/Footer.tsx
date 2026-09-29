@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { InstagramIcon, LinkedInIcon, LinktreeIcon, MailIcon } from "./BrandIcons";
 import { todayISO } from "@/lib/events";
 import { LINKS } from "@/lib/site";
@@ -41,7 +42,10 @@ export default function Footer() {
         </ul>
 
         <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-footer-text md:text-xs">
-          © {year} BMES · TMU
+          © {year} BMES · TMU ·{" "}
+          <Link href="/privacy" className="transition-colors hover:text-white">
+            Privacy
+          </Link>
         </span>
       </div>
     </footer>

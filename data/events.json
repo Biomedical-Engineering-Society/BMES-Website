@@ -227,15 +227,5 @@
     "images": [
       "/media/events/bme-coop-panel-2026/01.jpg"
     ]
-  },
-  {
-    "id": 18,
-    "title": "testing",
-    "date": "2026-10-01",
-    "time": "6",
-    "location": "test",
-    "description": "test",
-    "category": "Social",
-    "link": "#"
   }
 ]

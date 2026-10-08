@@ -45,6 +45,11 @@ export default function Footer() {
           © {year} BMES · TMU ·{" "}
           <Link href="/privacy" className="transition-colors hover:text-white">
             Privacy
+          </Link>{" "}
+          ·{" "}
+          {/* For the team. Not prefetched, so visitors never load the admin pages. */}
+          <Link href="/admin" prefetch={false} className="transition-colors hover:text-white">
+            Admin
           </Link>
         </span>
       </div>

@@ -97,6 +97,15 @@ export const HOME_STATS = [
   { value: "Official", label: "Student chapter of the global BMES" },
 ] as const;
 
+/** What the home page ticker says when there is no custom message and nothing coming up. */
+export const TICKER_FALLBACK = [
+  "Where academia meets industry",
+  "Official BMES student chapter",
+  "Free to join",
+  "Visit us at POD 377",
+  "Since 2010",
+] as const;
+
 /** Fact rail beside "Who we are" on the About page. */
 export const ABOUT_FACTS = [
   { value: "2010", label: "Founded at Toronto Metropolitan University" },

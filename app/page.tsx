@@ -2,10 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import FeaturedEvents from "./components/FeaturedEvents";
 import HeroVideo from "./components/HeroVideo";
+import Ticker from "./components/Ticker";
+import { bannerContent } from "@/lib/announcement";
 import { featuredEvents, upcomingEvents } from "@/lib/events";
 import { HOME_STATS, PILLARS, QUICK_LINKS } from "@/lib/site";
 
-/** The featured showcase depends on today's date, so do not freeze it at deploy time. */
+/** The featured showcase and the ticker depend on today's date, so do not freeze it at deploy time. */
 export const revalidate = 3600;
 
 export default function Home() {
@@ -15,76 +17,83 @@ export default function Home() {
 
   return (
     <>
-      {/* ================================================================
-          Hero
-          ================================================================ */}
-      <section className="relative flex min-h-[620px] items-center overflow-hidden bg-navy md:h-[780px]">
-        <HeroVideo poster="/media/campus-poster.jpg" src="/media/campus.mp4" />
+      {/* On desktop the hero, ticker and quick links fill exactly one screen, so the
+          fold lands on the bottom edge of the links. 93px is the desktop navbar. */}
+      <div className="lg:flex lg:h-[calc(100svh-93px)] lg:min-h-[680px] lg:flex-col">
+        {/* ================================================================
+            Hero
+            ================================================================ */}
+        <section className="relative flex min-h-[620px] items-center overflow-hidden bg-navy md:h-[780px] lg:h-auto lg:min-h-0 lg:flex-1">
+          <HeroVideo poster="/media/campus-poster.jpg" src="/media/campus.mp4" />
 
-        {/* Scrim and vignette, so the headline stays legible over any frame. */}
-        <div
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,27,51,0.78)_0%,rgba(7,27,51,0.55)_38%,rgba(7,27,51,0.62)_70%,rgba(7,27,51,0.88)_100%)]"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,rgba(7,27,51,0)_35%,rgba(7,27,51,0.6)_100%)]"
-          aria-hidden="true"
-        />
+          {/* Scrim and vignette, so the headline stays legible over any frame. */}
+          <div
+            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,27,51,0.78)_0%,rgba(7,27,51,0.55)_38%,rgba(7,27,51,0.62)_70%,rgba(7,27,51,0.88)_100%)]"
+            aria-hidden="true"
+          />
+          <div
+            className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_50%,rgba(7,27,51,0)_35%,rgba(7,27,51,0.6)_100%)]"
+            aria-hidden="true"
+          />
 
-        <div className="shell relative z-10 flex w-full flex-col items-center gap-6 py-24 text-center md:gap-7">
-          <h1 className="t-hero text-white">
-            Where academia meets <span className="text-salmon">industry</span>
-          </h1>
+          <div className="shell relative z-10 flex w-full flex-col items-center gap-6 py-24 text-center md:gap-7">
+            <h1 className="t-hero text-white">
+              Where academia meets <span className="text-salmon">industry</span>
+            </h1>
 
-          <p className="t-lead max-w-[68ch] text-on-navy">
-            As the Biomedical Engineering Society, we aim to provide a collaborative platform for
-            students to connect, grow, develop their skills, and explore their passion in
-            biomedical engineering both academically and professionally
-          </p>
+            <p className="t-lead max-w-[68ch] text-on-navy">
+              As the Biomedical Engineering Society, we aim to provide a collaborative platform for
+              students to connect, grow, develop their skills, and explore their passion in
+              biomedical engineering both academically and professionally
+            </p>
 
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-3.5">
-            <Link href="/about" className="btn btn-white">
-              About BMES
-            </Link>
-            <Link href="/events" className="btn btn-ghost-light">
-              See upcoming events
-            </Link>
+            <div className="mt-2 flex flex-wrap items-center justify-center gap-3.5">
+              <Link href="/about" className="btn btn-white">
+                About BMES
+              </Link>
+              <Link href="/events" className="btn btn-ghost-light">
+                See upcoming events
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
 
-      {/* ================================================================
-          Quick links
-          ================================================================ */}
-      <section aria-label="Quick links" className="border-b border-hairline">
-        <ul className="quick-links">
-          {QUICK_LINKS.map((link) => (
-            <li key={link.label}>
-              <a
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex h-full items-center bg-surface-2 py-6 transition-[background-color,box-shadow] duration-150 hover:bg-white hover:shadow-[inset_0_-3px_0_var(--color-brand)]"
-              >
-                <span className="flex flex-col gap-1">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">
-                    {link.kicker}
-                  </span>
-                  <span className="font-display flex items-center gap-2 text-lg font-semibold tracking-[-0.015em] text-[#2b3a52]">
-                    {link.label}
-                    <span
-                      className="text-base text-[#b3c0d1] transition-[color,transform] duration-150 group-hover:translate-x-0.5 group-hover:text-brand"
-                      aria-hidden="true"
-                    >
-                      ↗
+          {/* Sits over the bottom of the video, so the footage shows through it. */}
+          <Ticker {...bannerContent()} className="absolute inset-x-0 bottom-0 z-10" />
+        </section>
+
+        {/* ================================================================
+            Quick links
+            ================================================================ */}
+        <section aria-label="Quick links" className="border-b border-hairline">
+          <ul className="quick-links">
+            {QUICK_LINKS.map((link) => (
+              <li key={link.label}>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex h-full items-center bg-surface-2 py-4 transition-[background-color,box-shadow] duration-150 hover:bg-white hover:shadow-[inset_0_-3px_0_var(--color-brand)]"
+                >
+                  <span className="flex flex-col gap-1">
+                    <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">
+                      {link.kicker}
+                    </span>
+                    <span className="font-display flex items-center gap-2 text-lg font-semibold tracking-[-0.015em] text-[#2b3a52]">
+                      {link.label}
+                      <span
+                        className="text-base text-[#b3c0d1] transition-[color,transform] duration-150 group-hover:translate-x-0.5 group-hover:text-brand"
+                        aria-hidden="true"
+                      >
+                        ↗
+                      </span>
                     </span>
                   </span>
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
 
       {/* ================================================================
           About preview

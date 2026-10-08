@@ -112,6 +112,11 @@ export default function PhotoManager({
           JPG, PNG, WebP or iPhone HEIC, up to {MAX_EVENT_PHOTOS} per event. They are resized and cleaned up
           automatically.
         </p>
+        {/* The cover is cropped wide on the home page and event cards, and 3:2 on the events page. */}
+        <p className="text-sm text-muted">
+          <strong className="text-ink">Best cover:</strong> a landscape photo, about 3:2 (e.g. 1920 × 1280 or
+          larger), with people near the middle. The edges get trimmed on wider spots.
+        </p>
         <button type="button" onClick={() => input.current?.click()} className="btn btn-outline btn-sm">
           Choose photos
         </button>

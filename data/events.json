@@ -238,6 +238,12 @@
     "location": "ENG Lower Ground Room",
     "description": "An opportunity to meet the execs running the team and if you are applying to join our team, the people you will potentially be working with! Relax with some boardgames, networking, a little competition, and great food!",
     "category": "Social",
-    "link": "#"
+    "link": "#",
+    "images": [
+      "/media/events/boardgames-night-2026/01.jpg",
+      "/media/events/boardgames-night-2026/02.jpg",
+      "/media/events/boardgames-night-2026/03.jpg",
+      "/media/events/boardgames-night-2026/04.jpg"
+    ]
   }
 ]

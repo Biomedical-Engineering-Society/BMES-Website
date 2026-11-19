@@ -308,5 +308,15 @@
       "/media/events/bmes-design-competition-day-2-2026/14.jpg",
       "/media/events/bmes-design-competition-day-2-2026/15.jpg"
     ]
+  },
+  {
+    "id": 21,
+    "title": "BMES FemTech Pre-Incubation Experience Workshop",
+    "date": "2026-11-29",
+    "time": "10:00AM - 4:00PM",
+    "location": "Daphne Cockwell Complex (DCC 204/208)",
+    "description": "Join the BMES FemTech Pre-Incubation Experience Workshop to pitch bold ideas and connect with others shaping the future of women’s health! This event brings together innovators and entrepreneurs focused on advancing technology in the biomedical engineering and femtech sectors. Experience live pitches and network with professionals passionate about transforming healthcare through cutting-edge solutions. Engage with emerging ideas and be part of the next generation of leaders in these dynamic fields.",
+    "category": "Workshop",
+    "link": "https://BMES-Femtech.eventbrite.ca"
   }
 ]
